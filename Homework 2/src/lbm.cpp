@@ -209,7 +209,9 @@ int main()
     
     // Write the analytical solution
     writeLattice(domain,"AnalyticalSolution",0,lat);
-	//writeVelocityProfile(lat, domain);
+	writeVelocityProfile(lat, domain);
+	
+
 
     // Initialization of lattice at rest
     for (int j=0 ; j<domain.getNTot() ; j++)
@@ -367,14 +369,15 @@ int main()
 					cx = xi[0][k];
 					cy = xi[1][k];
 
-					fi = lat.f0_[j][k];;
+					feq = equilibrum(ux, uy, udotu, ro, omega, k, cx, cy, c1, c2, c3);
+					si = source(ux, uy, omega, k, cx, cy, c1, c4, c5, g);
+					fi = applyCollision(j, lat, k, feq, si, tau, dt);
 
 					if (k == 5 || k == 1 || k == 8) continue;
-					//std::cout << k << std::endl;
+				
 					int pop = streamTo(j, k, cx, cy, domain);
 					streamingNew(pop, lat, k, fi);
 				}
-				//std::cin >> cx;
 			}
 			// Left
 			else if (j%nx == 0) 
@@ -383,7 +386,9 @@ int main()
 					cx = xi[0][k];
 					cy = xi[1][k];
 
-					fi = lat.f0_[j][k];;
+					feq = equilibrum(ux, uy, udotu, ro, omega, k, cx, cy, c1, c2, c3);
+					si = source(ux, uy, omega, k, cx, cy, c1, c4, c5, g);
+					fi = applyCollision(j, lat, k, feq, si, tau, dt);
 
 					if (k == 6 || k == 3 || k == 7) continue;
 
@@ -396,10 +401,6 @@ int main()
 				for (int k = 0; k < 9; k++) {
 					cx = xi[0][k];
 					cy = xi[1][k];
-
-					feq = equilibrum(ux, uy, udotu, ro, omega, k, cx, cy, c1, c2, c3);
-					si = source(ux, uy, omega, k, cx, cy, c1, c4, c5, g);
-					fi = applyCollision(j, lat, k, feq, si, tau, dt);
 					int pop = streamTo(j, k, cx, cy, domain);
 					streamingNew(pop, lat, k, fi);
 				}
@@ -464,6 +465,7 @@ int main()
 
     // Write the last result
     writeLattice(domain,"Lattice",it,lat);
+	writeResults(domain, lat);
 
     // Calculate infinity norm of the error
     double erreur=0.;
