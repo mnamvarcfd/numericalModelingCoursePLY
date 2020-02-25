@@ -31,7 +31,6 @@
     <ClCompile Include="src\solutionExporterEulerian.cpp" />
     <ClCompile Include="src\streamingNew.cpp" />
     <ClCompile Include="src\tinyxml2.cpp" />
-    <ClCompile Include="src\writeResults.cpp" />
     <ClCompile Include="src\writeVelocityProfile.cpp" />
   </ItemGroup>
   <ItemGroup>

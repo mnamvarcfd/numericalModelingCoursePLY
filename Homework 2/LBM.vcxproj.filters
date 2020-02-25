@@ -57,9 +57,6 @@
     <ClCompile Include="src\tinyxml2.cpp">
       <Filter>Source Files\origCode</Filter>
     </ClCompile>
-    <ClCompile Include="src\writeResults.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\tinyxml2.h">
