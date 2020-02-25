@@ -303,7 +303,7 @@ int main()
 	double ro,ux,uy,udotu,fi,cx,cy,feq,si;
 
 	// Time loop
-    while(t<timeEnd && convergence==false && it<8000)
+    while(t<timeEnd && convergence==false /*&& it<8000*/)
     {
         // Space loop
         for (int j=0 ; j< ntot; j++)
@@ -492,25 +492,25 @@ int main()
 
 
 
-        // Convergence test for velocity
-        double deltaUmax = 0.;
-        for (int j=0 ; j<domain.getNTot() ; j++)
-        {
-            double deltaU = sqrt( (lat.u_[j][1] - u_old[j][1])*(lat.u_[j][1] - u_old[j][1]) );
-            deltaUmax=std::max(deltaU,deltaUmax);
-        }
-        
-        if ((deltaUmax/dt)<velocityConvergence)
-        {
-            std::cout << "Convergence reached : " << (deltaUmax/dt) <<std::endl;
-            std::cout << "Times : "<< t  <<std::endl;
-            convergence=true;
-        }
-        else if (it%outputFrequency==0)
-        {
-            std::cout << "Time : " << t  << " - Convergence : "<< (deltaUmax/dt) <<std::endl;
-            writeLattice(domain,"Lattice",it,lat);
-        }
+        ////////// Convergence test for velocity
+        ////////double deltaUmax = 0.;
+        ////////for (int j=0 ; j<domain.getNTot() ; j++)
+        ////////{
+        ////////    double deltaU = sqrt( (lat.u_[j][1] - u_old[j][1])*(lat.u_[j][1] - u_old[j][1]) );
+        ////////    deltaUmax=std::max(deltaU,deltaUmax);
+        ////////}
+        ////////
+        ////////if ((deltaUmax/dt)<velocityConvergence)
+        ////////{
+        ////////    std::cout << "Convergence reached : " << (deltaUmax/dt) <<std::endl;
+        ////////    std::cout << "Times : "<< t  <<std::endl;
+        ////////    convergence=true;
+        ////////}
+        ////////else if (it%outputFrequency==0)
+        ////////{
+        ////////    std::cout << "Time : " << t  << " - Convergence : "<< (deltaUmax/dt) <<std::endl;
+        ////////    writeLattice(domain,"Lattice",it,lat);
+        ////////}
 
         // This copies the content of lattice n to lattice n-1
         // f0 = f

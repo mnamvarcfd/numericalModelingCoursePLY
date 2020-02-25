@@ -7,7 +7,7 @@ void FWBB(Domain domain, Lattice lat) {
 
 	int iNodeLeft;
 	int iNodeRigt;
-	for (int j = 0; j < ny; j++) {
+	for (int j = 1; j < ny-1; j++) {
 		iNodeLeft = j * nx;
 		iNodeRigt = (j + 1) * nx - 1;
 
