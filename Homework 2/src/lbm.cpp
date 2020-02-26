@@ -41,7 +41,11 @@ double source(double ux, double uy, double *omega, int k, double cx, double cy,
 double applyCollision(int iNode, Lattice lat, int k, double Feq, double Si, double tau, double dt);
 
 
-void writeVelocityProfile(Lattice lat, Domain domain);
+void zouHeTop(Domain domain, Lattice lat, double rho);
+void zouHeBottom(Domain domain, Lattice lat, double rho);
+
+
+void writeVelocityProfile(std::string fileName, Lattice lat, Domain domain);
 
 
 
@@ -167,7 +171,7 @@ int main()
     // Domain interpretation
 
     // Mesh : get the values of nx and ny
-    double dx = /*parser.getDx()*/ 1/9. ;
+    double dx = parser.getDx() /*1/9.*/ ;
 
     // Give the values to the domain
     domain.setDx(dx);
@@ -204,7 +208,7 @@ int main()
     double dt= (tau-0.5)*rho0*dx*dx/(3.*mu);
     
     // Calculate Xi_r and cs
-    double xi_r =1.0  /*dx/dt*/; //momment by M.namvar
+    double xi_r =/*1.0*/  dx/dt; //momment by M.namvar
     double cs = 1./sqrt(3.)*xi_r;
     
     // Microscopic speed
@@ -257,7 +261,7 @@ int main()
     
     // Write the analytical solution
     writeLattice(domain,"AnalyticalSolution",0,lat);
-	//writeVelocityProfile(lat, domain);
+	writeVelocityProfile("AnalyticalProfile.plt",lat, domain);
 
     // Initialization of lattice at rest
     for (int j=0 ; j<domain.getNTot() ; j++)
@@ -310,7 +314,7 @@ int main()
         {
 			ro = lat.rho_[j];
 			ux = lat.u_[j][0];
-			uy = lat.u_[j][1]/* - 0.1*/;
+			uy = lat.u_[j][1] /*- 0.1*/ ;
 			udotu = ux * ux + uy * uy;
 
 		  // Bottom left
@@ -354,6 +358,7 @@ int main()
 			// Top left
 			else if (j == ntot - nx)
 			{
+				
 				for (int k = 0; k < 9; k++) {
 					cx = xi[0][k];
 					cy = xi[1][k];
@@ -399,11 +404,16 @@ int main()
 					feq = equilibrum(ux, uy, udotu, ro, omega, k, cx, cy, c1, c2, c3);
 					si = source(ux, uy, omega, k, cx, cy, c1, c4, c5, g);
 					fi = applyCollision(j, lat, k, feq, si, tau, dt);
+
+					//fi = lat.f0_[j][k];
+
 					if (k == 7 || k == 4 || k == 8) continue;
+
 					int pop = streamTo(j, k, cx, cy, domain);
 					streamingNew(pop, lat, k, fi);
 				}
 
+				//periodicBottom(domain, lat, 0.9);
 			}
 			// Top Periodicity
 			else if (j > (ntot - nx) && j < (ntot - 1)) 
@@ -416,10 +426,17 @@ int main()
 					si = source(ux, uy, omega, k, cx, cy, c1, c4, c5, g);
 					fi = applyCollision(j, lat, k, feq, si, tau, dt);
 
+					//fi = lat.f0_[j][k];
+
 					if (k == 6 || k == 2 || k == 5) continue;
+
 					int pop = streamTo(j, k, cx, cy, domain);
 					streamingNew(pop, lat, k, fi);
+
 				}
+
+
+				//periodicTop(domain, lat, 1.1);
 			}
 			// Right
 			else if ((j + 1) % nx == 0) 
@@ -428,11 +445,11 @@ int main()
 					cx = xi[0][k];
 					cy = xi[1][k];
 
-					//fi = lat.f0_[j][k];
-
 					feq = equilibrum(ux, uy, udotu, ro, omega, k, cx, cy, c1, c2, c3);
 					si = source(ux, uy, omega, k, cx, cy, c1, c4, c5, g);
 					fi = applyCollision(j, lat, k, feq, si, tau, dt);
+
+					//fi = lat.f0_[j][k];
 
 					if (k == 5 || k == 1 || k == 8) continue;
 			
@@ -447,11 +464,11 @@ int main()
 					cx = xi[0][k];
 					cy = xi[1][k];
 
-					//fi = lat.f0_[j][k];
-
 					feq = equilibrum(ux, uy, udotu, ro, omega, k, cx, cy, c1, c2, c3);
 					si = source(ux, uy, omega, k, cx, cy, c1, c4, c5, g);
 					fi = applyCollision(j, lat, k, feq, si, tau, dt);
+
+					//fi = lat.f0_[j][k];
 
 					if (k == 6 || k == 3 || k == 7) continue;
 
@@ -477,9 +494,16 @@ int main()
 
         }
 
+		lat.f_[ntot - nx][8] = lat.f_[1][8];
+		lat.f_[0][5] = lat.f_[1][5];
+
 		FWBB(domain, lat);
 		periodic(domain, lat);
 		//system("pause");
+
+		//zouHeBottom(domain, lat, 0.9);
+		//zouHeTop(domain, lat, 1.1);
+
 
 		calMacroValue(domain, xi, lat, g, dt);
 
@@ -489,28 +513,27 @@ int main()
 		//std::cin >> fi;
 		//break;
 
+        // Convergence test for velocity
+        double deltaUmax = 0.;
+        for (int j=0 ; j<domain.getNTot() ; j++)
+        {
+            double deltaU = sqrt( (lat.u_[j][1] - u_old[j][1])*(lat.u_[j][1] - u_old[j][1]) );
+            deltaUmax=std::max(deltaU,deltaUmax);
+        }
+        
+        if ((deltaUmax/dt)<velocityConvergence)
+        {
+            std::cout << "Convergence reached : " << (deltaUmax/dt) <<std::endl;
+            std::cout << "Times : "<< t  <<std::endl;
+            convergence=true;
+        }
+        else if (it%outputFrequency==0)
+        {
+            std::cout << "Time : " << t  << " - Convergence : "<< (deltaUmax/dt) <<std::endl;
+            writeLattice(domain,"Lattice",it,lat);
 
-
-
-        ////////// Convergence test for velocity
-        ////////double deltaUmax = 0.;
-        ////////for (int j=0 ; j<domain.getNTot() ; j++)
-        ////////{
-        ////////    double deltaU = sqrt( (lat.u_[j][1] - u_old[j][1])*(lat.u_[j][1] - u_old[j][1]) );
-        ////////    deltaUmax=std::max(deltaU,deltaUmax);
-        ////////}
-        ////////
-        ////////if ((deltaUmax/dt)<velocityConvergence)
-        ////////{
-        ////////    std::cout << "Convergence reached : " << (deltaUmax/dt) <<std::endl;
-        ////////    std::cout << "Times : "<< t  <<std::endl;
-        ////////    convergence=true;
-        ////////}
-        ////////else if (it%outputFrequency==0)
-        ////////{
-        ////////    std::cout << "Time : " << t  << " - Convergence : "<< (deltaUmax/dt) <<std::endl;
-        ////////    writeLattice(domain,"Lattice",it,lat);
-        ////////}
+			writeVelocityProfile("NumericalProfile.plt", lat, domain);
+        }
 
         // This copies the content of lattice n to lattice n-1
         // f0 = f
@@ -550,7 +573,7 @@ int main()
     std::cout << "Norm of the error :  "<< erreurL2 <<std::endl;
 
 
-	writeVelocityProfile(lat, domain);
+	writeVelocityProfile("NumericalProfile.plt",lat, domain);
 	std::cin >> erreurL2;
     return 0;
 }

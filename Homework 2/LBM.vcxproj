@@ -41,6 +41,9 @@
     <ClInclude Include="src\solutionExporterEulerian.h" />
     <ClInclude Include="src\tinyxml2.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Xml Include="resources\parameter.xml" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{B9D7E0B1-5D1F-4919-9EF7-CD83398D8B52}</ProjectGuid>

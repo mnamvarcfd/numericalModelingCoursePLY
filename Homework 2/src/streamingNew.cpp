@@ -11,6 +11,14 @@ int streamTo(int iNode, int k, double cx, double cy, Domain domain) {
 	int j = iNode / nx;
 
 
+	if (cx < 0.)cx = -1;
+	if (cx > 0.)cx = 1;
+
+	if (cy < 0.)cy = -1;
+	if (cy > 0.)cy = 1;
+
+	//std::cout << cx << std::endl;
+
 	int pop = (j + cy)*nx + i + cx;
 
 	return pop;

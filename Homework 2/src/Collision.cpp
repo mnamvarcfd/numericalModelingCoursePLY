@@ -7,12 +7,12 @@ double equilibrum(double ux, double uy, double udotu, double ro,
 	double uiei;
 	double uiei2;
 	double Feq;
-	double fi;
-	double Si;
 
+	//std::cout << cx << "+++++++++++" << std::endl;
 	uiei = cx * ux + cy * uy;
 	uiei2 = uiei * uiei;
 	Feq = ro * omega[k] * (1 + c1 * uiei + c2 * uiei2 + c3 * udotu);
+	//Feq = ro * omega[k] * (1 +3 * uiei + 4.5 * uiei2 -1.5 * udotu);
 
 	return Feq;
 }
