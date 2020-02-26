@@ -26,75 +26,15 @@
 
 
 void calMacroValue(Domain &domain, double **xi, Lattice lat, double *g, double dt);
-void FWBB(Domain domain, Lattice lat);
-void periodic(Domain domain, Lattice lat);
-
-int bottomStreamTo(int iNode, int k, double cx, double cy, Domain domain);
-int topStreamTo(int iNode, int k, double cx, double cy, Domain domain);
-int streamTo(int iNode, int k, double cx, double cy, Domain domain);
-void streamingNew(int pop, Lattice lat, int k, double fi);
-
-double equilibrum(double ux, double uy, double udotu, double ro,
-	double *omega, int k, double cx, double cy, double c1, double c2, double c3);
-double source(double ux, double uy, double *omega, int k, double cx, double cy,
-	double c1, double c4, double c5, double *g);
-double applyCollision(int iNode, Lattice lat, int k, double Feq, double Si, double tau, double dt);
-
-
-void zouHeTop(Domain domain, Lattice lat, double rho);
-void zouHeBottom(Domain domain, Lattice lat, double rho);
-
-
+void bouncBackBC(Domain domain, Lattice lat);
+void periodicBC(Domain domain, Lattice lat);
+void streaming(int iNode, double **Cxy, Domain domain, Lattice lat, int k, double fi);
 void writeVelocityProfile(std::string fileName, Lattice lat, Domain domain);
-
-void writeResults(Domain domain, Lattice lat) {
-
-	FILE *file1;
-	fopen_s(&file1, "Results.txt", "w");
-	fprintf(file1, " i  j       f0           ");
-	fprintf(file1, "f1          f2            f3           ");
-	fprintf(file1, "f4             f5            f6           ");
-	fprintf(file1, "f7            f8  \n");
-
-	int iNode = 0;
-	for (int j = 0; j < domain.getNy(); j++) {
-		for (int i = 0; i < domain.getNx(); i++) {
-			iNode = j * domain.getNx() + i;
-
-			fprintf(file1, "%d  %d ", i, j);
+void writeResults(Domain domain, Lattice lat);
+void collision(int iNode, Lattice lat, double tau, double dt,	double ux, double uy, double *omega, double **xi,
+	double c1, double c2, double c3, double c4, double c5, double *g, double udotu, double ro, double *fi);
 
 
-			for (int k = 0; k < 9; k++) {
-				fprintf(file1, "%.9f  ", lat.f_[iNode][k]);
-			}
-			fprintf(file1, "\n");
-		
-
-			iNode++;
-		}
-	}
-
-
-	fprintf(file1, " i  j          ro           u             v \n ");
-
-	iNode = 0;
-	for (int j = 0; j < domain.getNy(); j++) {
-		for (int i = 0; i < domain.getNx(); i++) {
-			iNode = j * domain.getNx() + i;
-
-			fprintf(file1, "%d  %d ", i, j);
-
-
-			fprintf(file1, "%.9f  ", lat.rho_[iNode]);
-			fprintf(file1, "%.9f  ", lat.u_[iNode][0]);
-			fprintf(file1, "%.9f  ", lat.u_[iNode][1]);
-			fprintf(file1, "  \n ");
-
-			iNode++;
-		}
-	}
-	fclose(file1);
-}
 
 void setXi(double **Xi, double Xi_r)
 {
@@ -125,7 +65,6 @@ void setXi(double **Xi, double Xi_r)
     Xi[0][8] = Xi_r;
     Xi[1][8] = -Xi_r;
 }
-
 void setWeights(double* omega)
 {
     omega[0]= 4./9.;
@@ -270,8 +209,8 @@ int main()
     moment1 = new double[2];
     sol_analyt = new double[ntot];
 
-    double *Feq, *S;
-    Feq = new double[9];
+    double *fi, *S;
+    fi = new double[9];
     S = new double[9];
 
     bool convergence=false;
@@ -280,13 +219,15 @@ int main()
     int it=0;
 
 
-
-
-	////clock_t t1, t2;
-	////t1 = clock();
-
 	// Variables to use in the equilibrium calculation
-	double ro,ux,uy,udotu,fi,cx,cy,feq,si;
+	double ro,ux,uy,udotu,fiVal;
+
+	// Microscopic unit speed
+	double **Cxy;
+	Cxy = new double*[2];
+	Cxy[0] = new double[9];
+	Cxy[1] = new double[9];
+	setXi(Cxy, 1.0); 
 
 	// Time loop
     while(t<timeEnd && convergence==false)
@@ -299,42 +240,28 @@ int main()
 			uy = lat.u_[j][1];
 			udotu = ux * ux + uy * uy;
 
+			collision(j, lat, tau, dt, ux, uy, omega, xi, c1, c2, c3, c4, c5, g, udotu, ro, fi);
+
 		  // Bottom left
 			if (j == 0)
 			{
 				for (int k = 0; k < 9; k++) {
-					cx = xi[0][k];
-					cy = xi[1][k];
+					//fiVal = lat.f0_[j][k];  
+					fiVal = fi[k];
 
-					feq = equilibrum(ux, uy, udotu, ro, omega, k, cx, cy, c1, c2, c3);
-					si = source(ux, uy, omega, k, cx, cy, c1, c4, c5, g);
-					fi = applyCollision(j, lat, k, feq, si, tau, dt);
-
-					//fi = lat.f0_[j][k];  
-					  
 					if (k != 1 && k != 2 && k != 5) continue;
-
-					int pop = streamTo(j, k, cx, cy, domain);
-					streamingNew(pop, lat, k, fi);
+					streaming(j, Cxy, domain, lat, k, fiVal);
 				}
 			}    
 			// Bottom right
 			else if (j == nx - 1)
 			{
 				for (int k = 0; k < 9; k++) {
-					cx = xi[0][k];
-					cy = xi[1][k];
-
-					feq = equilibrum(ux, uy, udotu, ro, omega, k, cx, cy, c1, c2, c3);
-					si = source(ux, uy, omega, k, cx, cy, c1, c4, c5, g);
-					fi = applyCollision(j, lat, k, feq, si, tau, dt);
-
-					//fi = lat.f0_[j][k];
+					//fiVal = lat.f0_[j][k]; 
+					fiVal = fi[k];
 
 					if (k != 3 && k != 6 && k != 2) continue;
-
-					int pop = streamTo(j, k, cx, cy, domain);
-					streamingNew(pop, lat, k, fi);
+					streaming(j, Cxy, domain, lat, k, fiVal);
 				}
 			} 
 			// Top left
@@ -342,153 +269,82 @@ int main()
 			{
 				
 				for (int k = 0; k < 9; k++) {
-					cx = xi[0][k];
-					cy = xi[1][k];
-
-					feq = equilibrum(ux, uy, udotu, ro, omega, k, cx, cy, c1, c2, c3);
-					si = source(ux, uy, omega, k, cx, cy, c1, c4, c5, g);
-					fi = applyCollision(j, lat, k, feq, si, tau, dt);
-
-					//fi = lat.f0_[j][k];
+					//fiVal = lat.f0_[j][k];
+					fiVal = fi[k];
 
 					if (k != 1 && k != 4 && k != 8) continue;
-
-					int pop = streamTo(j, k, cx, cy, domain);
-					streamingNew(pop, lat, k, fi);
+					streaming(j, Cxy, domain, lat, k, fiVal);
 				}
 			} 
 			// Top right
 			else if (j == ntot - 1) 
 			{
 				for (int k = 0; k < 9; k++) {
-					cx = xi[0][k];
-					cy = xi[1][k];
-
-					feq = equilibrum(ux, uy, udotu, ro, omega, k, cx, cy, c1, c2, c3);
-					si = source(ux, uy, omega, k, cx, cy, c1, c4, c5, g);
-					fi = applyCollision(j, lat, k, feq, si, tau, dt);
-
-					//fi = lat.f0_[j][k];
+					//fiVal = lat.f0_[j][k];
+					fiVal = fi[k];
 
 					if (k != 3 && k != 4 && k != 7) continue;
-
-					int pop = streamTo(j, k, cx, cy, domain);
-					streamingNew(pop, lat, k, fi);
+					streaming(j, Cxy, domain, lat, k, fiVal);
 				}
 			}
 			//Bottom Periodicity
 			else if (j > 0 && j < (nx - 1)) 
 			{
 				for (int k = 0; k < 9; k++) {
-					cx = xi[0][k];
-					cy = xi[1][k];
-
-					feq = equilibrum(ux, uy, udotu, ro, omega, k, cx, cy, c1, c2, c3);
-					si = source(ux, uy, omega, k, cx, cy, c1, c4, c5, g);
-					fi = applyCollision(j, lat, k, feq, si, tau, dt);
-
-					//fi = lat.f0_[j][k];
+					fiVal = fi[k];
 
 					if (k == 7 || k == 4 || k == 8) continue;
-
-					int pop = streamTo(j, k, cx, cy, domain);
-					streamingNew(pop, lat, k, fi);
+					streaming(j, Cxy, domain, lat, k, fiVal);
 				}
 			}
 			// Top Periodicity
 			else if (j > (ntot - nx) && j < (ntot - 1)) 
 			{
 				for (int k = 0; k < 9; k++) {
-					cx = xi[0][k];
-					cy = xi[1][k];
-
-					feq = equilibrum(ux, uy, udotu, ro, omega, k, cx, cy, c1, c2, c3);
-					si = source(ux, uy, omega, k, cx, cy, c1, c4, c5, g);
-					fi = applyCollision(j, lat, k, feq, si, tau, dt);
-
-					//fi = lat.f0_[j][k];
+					fiVal = fi[k];
 
 					if (k == 6 || k == 2 || k == 5) continue;
-
-					int pop = streamTo(j, k, cx, cy, domain);
-					streamingNew(pop, lat, k, fi);
+					streaming(j, Cxy, domain, lat, k, fiVal);
 				}
 			}
 			// Right
 			else if ((j + 1) % nx == 0) 
 			{
 				for (int k = 0; k < 9; k++) {
-					cx = xi[0][k];
-					cy = xi[1][k];
-
-					feq = equilibrum(ux, uy, udotu, ro, omega, k, cx, cy, c1, c2, c3);
-					si = source(ux, uy, omega, k, cx, cy, c1, c4, c5, g);
-					fi = applyCollision(j, lat, k, feq, si, tau, dt);
-
-					//fi = lat.f0_[j][k];
+					fiVal = fi[k];
+					//fiVal = lat.f0_[j][k];
 
 					if (k == 5 || k == 1 || k == 8) continue;
-			
-					int pop = streamTo(j, k, cx, cy, domain);
-					streamingNew(pop, lat, k, fi);
+					streaming(j, Cxy, domain, lat, k, fiVal);
 				}
 			}
 			// Left
 			else if (j%nx == 0) 
 			{
 				for (int k = 0; k < 9; k++) {
-					cx = xi[0][k];
-					cy = xi[1][k];
-
-					feq = equilibrum(ux, uy, udotu, ro, omega, k, cx, cy, c1, c2, c3);
-					si = source(ux, uy, omega, k, cx, cy, c1, c4, c5, g);
-					fi = applyCollision(j, lat, k, feq, si, tau, dt);
-
-					//fi = lat.f0_[j][k];
+					fiVal = fi[k];
+					//fiVal = lat.f0_[j][k];
 
 					if (k == 6 || k == 3 || k == 7) continue;
-
-					int pop = streamTo(j, k, cx, cy, domain);
-					streamingNew(pop, lat, k, fi);
+					streaming(j, Cxy, domain, lat, k, fiVal);
 				}
 			}
 			// non boundary
 			else
 			{
 				for (int k = 0; k < 9; k++) {
-					cx = xi[0][k];
-					cy = xi[1][k];
+					fiVal = fi[k];
 
-					feq = equilibrum(ux, uy, udotu, ro, omega, k, cx, cy, c1, c2, c3);
-					si = source(ux, uy, omega, k, cx, cy, c1, c4, c5, g);
-					fi = applyCollision(j, lat, k, feq, si, tau, dt);
-
-					int pop = streamTo(j, k, cx, cy, domain);
-					streamingNew(pop, lat, k, fi);
+					streaming(j, Cxy, domain, lat, k, fiVal);
 				}
 			}
 
         }
 
-
-		lat.f_[ntot - nx][8] = lat.f_[1][8];
-		lat.f_[0][5] = lat.f_[1][5];
-
-		FWBB(domain, lat);
-		periodic(domain, lat);
-		//system("pause");
-
-		//zouHeBottom(domain, lat, 0.9);
-		//zouHeTop(domain, lat, 1.1);
-
-
+		bouncBackBC(domain, lat);
+		periodicBC(domain, lat);
 		calMacroValue(domain, xi, lat, g, dt);
 
-
-		//writeResults(domain, lat);
-		//writeLattice(domain, "Lattice", it, lat);
-		//std::cin >> fi;
-		//break;
 
         // Convergence test for velocity
         double deltaUmax = 0.;
@@ -529,9 +385,6 @@ int main()
         t+=dt;
         it++;
     }
-
-	////t2 = clock();
-	////std::cout << " time is  " << (float)(t2 - t1) / CLOCKS_PER_SEC << std::endl;
 
     // Write the last result
     writeLattice(domain,"Lattice",it,lat);

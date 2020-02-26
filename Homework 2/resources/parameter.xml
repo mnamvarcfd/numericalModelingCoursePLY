@@ -5,7 +5,7 @@
   </mesh>
   <time>
     <timeEnd>100</timeEnd>
-	<outputFrequency>1000</outputFrequency>
+	<outputFrequency>100</outputFrequency>
   </time>
   <domain>
     <xmin>-0.5</xmin>

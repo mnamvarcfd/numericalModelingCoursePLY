@@ -1,8 +1,6 @@
 #include <fstream>
 #include "lattice.h"
 #include "domain.h"
-#include <iostream> 
-
 void writeVelocityProfile(std::string fileName, Lattice lat, Domain domain) {
 
 	int nx = domain.getNx();
@@ -28,14 +26,12 @@ void writeVelocityProfile(std::string fileName, Lattice lat, Domain domain) {
 		if (ux_Numeric[i] > uCenter) uCenter = ux_Numeric[i];
 	}
 
-	//std::cout << cnt << "--- " << uCenter << std::endl;
-
-
+	fprintf(file1, "zone  \n ");
 	for (int i = 0; i < cnt; i++) {
 		double y = ((double)i - width);
 		ux_Numeric[i] = ux_Numeric[i] /*/ uCenter*/;
 
-		fprintf(file1, "%.9f  %.9f  \n ", ux_Numeric[i], (y /*+ 0.5*/) / width);
+		fprintf(file1, "%.9f  %.9f  \n ", ux_Numeric[i], (y * 0.5) / width);
 	}
 	fclose(file1);
 

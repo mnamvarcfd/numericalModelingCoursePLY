@@ -1,13 +1,13 @@
 #include "domain.h"
 #include "lattice.h"
 
-void FWBB(Domain domain, Lattice lat) {
+void bouncBackBC(Domain domain, Lattice lat) {
 	int nx = domain.getNx();
 	int ny = domain.getNy();
 
 	int iNodeLeft;
 	int iNodeRigt;
-	for (int j = 1; j < ny-1; j++) {
+	for (int j = 0; j < ny; j++) {
 		iNodeLeft = j * nx;
 		iNodeRigt = (j + 1) * nx - 1;
 
