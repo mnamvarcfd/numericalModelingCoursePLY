@@ -47,26 +47,6 @@ void zouHeBottom(Domain domain, Lattice lat, double rho);
 
 void writeVelocityProfile(std::string fileName, Lattice lat, Domain domain);
 
-
-
-
-
-
-
-//void streaming(int nx, int ny, int j, double cx, double cy, Lattice &lat, double fi, int k);
-//void streamingBottomPeriodicity(int nx, int ny, int j, double cx, double cy, Lattice &lat, double fi, int k);
-//void streamingTopPeriodicity(int nx, int ny, int j, double cx, double cy, Lattice &lat, double fi, int k);
-//void streamingLeftWall(int nx, int ny, int j, double cx, double cy, Lattice &lat, double fi, int k);
-//void streamingRigtWall(int nx, int ny, int j, double cx, double cy, Lattice &lat, double fi, int k);
-//
-//void streamingBottomLeftWall(int nx, int ny, int j, double cx, double cy, Lattice &lat, double fi, int k);
-//void streamingTopLeftWall(int nx, int ny, int j, double cx, double cy, Lattice &lat, double fi, int k);
-//void streamingTopRigtWall(int nx, int ny, int j, double cx, double cy, Lattice &lat, double fi, int k);
-//void streamingBottomRigtWall(int nx, int ny, int j, double cx, double cy, Lattice &lat, double fi, int k);
-//double collision(int iNode, Lattice lat, double ux, double uy, double udotu, double ro,
-//	double *omega, int k, double cx, double cy, double c1, double c2, double c3, 
-//	double c4, double c5, double cs, double tau, double *g, double dt);
-//double collisionWall(int iNode, Lattice lat, int k);
 void writeResults(Domain domain, Lattice lat) {
 
 	FILE *file1;
@@ -171,7 +151,7 @@ int main()
     // Domain interpretation
 
     // Mesh : get the values of nx and ny
-    double dx = parser.getDx() /*1/9.*/ ;
+    double dx = parser.getDx();
 
     // Give the values to the domain
     domain.setDx(dx);
@@ -208,7 +188,7 @@ int main()
     double dt= (tau-0.5)*rho0*dx*dx/(3.*mu);
     
     // Calculate Xi_r and cs
-    double xi_r =/*1.0*/  dx/dt; //momment by M.namvar
+    double xi_r =dx/dt;
     double cs = 1./sqrt(3.)*xi_r;
     
     // Microscopic speed
@@ -300,6 +280,8 @@ int main()
     int it=0;
 
 
+
+
 	////clock_t t1, t2;
 	////t1 = clock();
 
@@ -307,14 +289,14 @@ int main()
 	double ro,ux,uy,udotu,fi,cx,cy,feq,si;
 
 	// Time loop
-    while(t<timeEnd && convergence==false /*&& it<8000*/)
+    while(t<timeEnd && convergence==false)
     {
         // Space loop
         for (int j=0 ; j< ntot; j++)
         {
 			ro = lat.rho_[j];
 			ux = lat.u_[j][0];
-			uy = lat.u_[j][1] /*- 0.1*/ ;
+			uy = lat.u_[j][1];
 			udotu = ux * ux + uy * uy;
 
 		  // Bottom left
@@ -412,8 +394,6 @@ int main()
 					int pop = streamTo(j, k, cx, cy, domain);
 					streamingNew(pop, lat, k, fi);
 				}
-
-				//periodicBottom(domain, lat, 0.9);
 			}
 			// Top Periodicity
 			else if (j > (ntot - nx) && j < (ntot - 1)) 
@@ -432,11 +412,7 @@ int main()
 
 					int pop = streamTo(j, k, cx, cy, domain);
 					streamingNew(pop, lat, k, fi);
-
 				}
-
-
-				//periodicTop(domain, lat, 1.1);
 			}
 			// Right
 			else if ((j + 1) % nx == 0) 
@@ -493,6 +469,7 @@ int main()
 			}
 
         }
+
 
 		lat.f_[ntot - nx][8] = lat.f_[1][8];
 		lat.f_[0][5] = lat.f_[1][5];
