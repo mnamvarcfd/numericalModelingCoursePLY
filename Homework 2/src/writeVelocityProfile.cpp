@@ -3,14 +3,14 @@
 #include "domain.h"
 #include <iostream> 
 
-void writeVelocityProfile(Lattice lat, Domain domain) {
+void writeVelocityProfile(std::string fileName, Lattice lat, Domain domain) {
 
 	int nx = domain.getNx();
 	int ny = domain.getNy();
 	int ntot = domain.getNTot();
 
 	FILE *file1;
-	fopen_s(&file1, "VelocityProfile.plt", "w");
+	fopen_s(&file1, fileName.c_str(), "w");
 
 	double *ux_Numeric = new double[nx];
 	double width = (nx - 1) / 2.;
@@ -33,7 +33,7 @@ void writeVelocityProfile(Lattice lat, Domain domain) {
 
 	for (int i = 0; i < cnt; i++) {
 		double y = ((double)i - width);
-		ux_Numeric[i] = ux_Numeric[i] / uCenter;
+		ux_Numeric[i] = ux_Numeric[i] /*/ uCenter*/;
 
 		fprintf(file1, "%.9f  %.9f  \n ", ux_Numeric[i], (y /*+ 0.5*/) / width);
 	}
