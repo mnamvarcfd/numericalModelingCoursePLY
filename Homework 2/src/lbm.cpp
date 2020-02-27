@@ -232,6 +232,8 @@ int main() {
 	Cxy[1] = new double[9];
 	setXi(Cxy, 1.0); 
 
+
+
 	// Time loop
 	while (t < timeEnd && convergence == false)
 	{
