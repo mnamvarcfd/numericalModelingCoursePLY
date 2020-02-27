@@ -11,13 +11,13 @@ void bouncBackBC(Domain domain, Lattice lat) {
 		iNodeLeft = j * nx;
 		iNodeRigt = (j + 1) * nx - 1;
 
-		lat.f_[iNodeLeft][5] = lat.f_[iNodeLeft][7];
-		lat.f_[iNodeLeft][1] = lat.f_[iNodeLeft][3];
-		lat.f_[iNodeLeft][8] = lat.f_[iNodeLeft][6];
+		lat.f0_[iNodeLeft][5] = lat.f0_[iNodeLeft][7];
+		lat.f0_[iNodeLeft][1] = lat.f0_[iNodeLeft][3];
+		lat.f0_[iNodeLeft][8] = lat.f0_[iNodeLeft][6];
 
-		lat.f_[iNodeRigt][7] = lat.f_[iNodeRigt][5];
-		lat.f_[iNodeRigt][3] = lat.f_[iNodeRigt][1];
-		lat.f_[iNodeRigt][6] = lat.f_[iNodeRigt][8];
+		lat.f0_[iNodeRigt][7] = lat.f0_[iNodeRigt][5];
+		lat.f0_[iNodeRigt][3] = lat.f0_[iNodeRigt][1];
+		lat.f0_[iNodeRigt][6] = lat.f0_[iNodeRigt][8];
 	}
 
 }

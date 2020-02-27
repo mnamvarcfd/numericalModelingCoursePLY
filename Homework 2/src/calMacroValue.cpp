@@ -22,7 +22,7 @@ void calMacroValue(Domain &domain, double **xi, Lattice lat, double *g, double d
 			cx = xi[0][k];
 			cy = xi[1][k];
 
-			fi = lat.f_[j][k];
+			fi = lat.f0_[j][k];
 
 			sumFi += fi;
 			moment1x += fi * cx;

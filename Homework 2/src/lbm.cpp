@@ -9,7 +9,6 @@
 *
 ********************************************************************/
 
-
 // C++ Standard includes
 #include <iostream> 
 #include <cmath>
@@ -28,11 +27,14 @@
 void calMacroValue(Domain &domain, double **xi, Lattice lat, double *g, double dt);
 void bouncBackBC(Domain domain, Lattice lat);
 void periodicBC(Domain domain, Lattice lat);
-void streaming(int iNode, double **Cxy, Domain domain, Lattice lat, int k, double fi);
+void streaming(double **Cxy, Domain domain, Lattice lat);
 void writeVelocityProfile(std::string fileName, Lattice lat, Domain domain);
 void writeResults(Domain domain, Lattice lat);
-void collision(int iNode, Lattice lat, double tau, double dt,	double ux, double uy, double *omega, double **xi,
-	double c1, double c2, double c3, double c4, double c5, double *g, double udotu, double ro, double *fi);
+void collision(Domain domain, Lattice lat, double tau, double dt, double *omega, double **xi,
+	double c1, double c2, double c3, double c4, double c5, double *g);
+
+
+
 
 
 
@@ -80,8 +82,7 @@ void setWeights(double* omega)
     omega[8]= 1./36.;
 }
 
-int main()
-{
+int main() {
     Parser parser;
     parser.parse();
 
@@ -220,7 +221,9 @@ int main()
 
 
 	// Variables to use in the equilibrium calculation
-	double ro,ux,uy,udotu,fiVal;
+	double deltaTotalMoment = 0.0;
+	double totalMomentNew =  0.0;
+	double totalMomentOld =  0.0;
 
 	// Microscopic unit speed
 	double **Cxy;
@@ -230,156 +233,41 @@ int main()
 	setXi(Cxy, 1.0); 
 
 	// Time loop
-    while(t<timeEnd && convergence==false)
-    {
-        // Space loop
-        for (int j=0 ; j< ntot; j++)
-        {
-			ro = lat.rho_[j];
-			ux = lat.u_[j][0];
-			uy = lat.u_[j][1];
-			udotu = ux * ux + uy * uy;
+	while (t < timeEnd && convergence == false)
+	{
 
-			collision(j, lat, tau, dt, ux, uy, omega, xi, c1, c2, c3, c4, c5, g, udotu, ro, fi);
+		collision(domain, lat, tau, dt, omega, xi, c1, c2, c3, c4, c5, g);
 
-		  // Bottom left
-			if (j == 0)
-			{
-				for (int k = 0; k < 9; k++) {
-					//fiVal = lat.f0_[j][k];  
-					fiVal = fi[k];
+		streaming(Cxy, domain, lat);
 
-					if (k != 1 && k != 2 && k != 5) continue;
-					streaming(j, Cxy, domain, lat, k, fiVal);
-				}
-			}    
-			// Bottom right
-			else if (j == nx - 1)
-			{
-				for (int k = 0; k < 9; k++) {
-					//fiVal = lat.f0_[j][k]; 
-					fiVal = fi[k];
-
-					if (k != 3 && k != 6 && k != 2) continue;
-					streaming(j, Cxy, domain, lat, k, fiVal);
-				}
-			} 
-			// Top left
-			else if (j == ntot - nx)
-			{
-				
-				for (int k = 0; k < 9; k++) {
-					//fiVal = lat.f0_[j][k];
-					fiVal = fi[k];
-
-					if (k != 1 && k != 4 && k != 8) continue;
-					streaming(j, Cxy, domain, lat, k, fiVal);
-				}
-			} 
-			// Top right
-			else if (j == ntot - 1) 
-			{
-				for (int k = 0; k < 9; k++) {
-					//fiVal = lat.f0_[j][k];
-					fiVal = fi[k];
-
-					if (k != 3 && k != 4 && k != 7) continue;
-					streaming(j, Cxy, domain, lat, k, fiVal);
-				}
-			}
-			//Bottom Periodicity
-			else if (j > 0 && j < (nx - 1)) 
-			{
-				for (int k = 0; k < 9; k++) {
-					fiVal = fi[k];
-
-					if (k == 7 || k == 4 || k == 8) continue;
-					streaming(j, Cxy, domain, lat, k, fiVal);
-				}
-			}
-			// Top Periodicity
-			else if (j > (ntot - nx) && j < (ntot - 1)) 
-			{
-				for (int k = 0; k < 9; k++) {
-					fiVal = fi[k];
-
-					if (k == 6 || k == 2 || k == 5) continue;
-					streaming(j, Cxy, domain, lat, k, fiVal);
-				}
-			}
-			// Right
-			else if ((j + 1) % nx == 0) 
-			{
-				for (int k = 0; k < 9; k++) {
-					fiVal = fi[k];
-					//fiVal = lat.f0_[j][k];
-
-					if (k == 5 || k == 1 || k == 8) continue;
-					streaming(j, Cxy, domain, lat, k, fiVal);
-				}
-			}
-			// Left
-			else if (j%nx == 0) 
-			{
-				for (int k = 0; k < 9; k++) {
-					fiVal = fi[k];
-					//fiVal = lat.f0_[j][k];
-
-					if (k == 6 || k == 3 || k == 7) continue;
-					streaming(j, Cxy, domain, lat, k, fiVal);
-				}
-			}
-			// non boundary
-			else
-			{
-				for (int k = 0; k < 9; k++) {
-					fiVal = fi[k];
-
-					streaming(j, Cxy, domain, lat, k, fiVal);
-				}
-			}
-
-        }
+		periodicBC(domain, lat);
 
 		bouncBackBC(domain, lat);
-		periodicBC(domain, lat);
+
 		calMacroValue(domain, xi, lat, g, dt);
 
-
         // Convergence test for velocity
-        double deltaUmax = 0.;
-        for (int j=0 ; j<domain.getNTot() ; j++)
+        totalMomentNew = 0.;
+		for (int j = 0; j < ntot; j++)
+			totalMomentNew += lat.u_[j][1];
+
+		deltaTotalMoment = abs(totalMomentNew - totalMomentOld)/ abs(totalMomentNew);
+
+	
+        if ((deltaTotalMoment)<velocityConvergence)
         {
-            double deltaU = sqrt( (lat.u_[j][1] - u_old[j][1])*(lat.u_[j][1] - u_old[j][1]) );
-            deltaUmax=std::max(deltaU,deltaUmax);
-        }
-        
-        if ((deltaUmax/dt)<velocityConvergence)
-        {
-            std::cout << "Convergence reached : " << (deltaUmax/dt) <<std::endl;
+            std::cout << "Convergence reached : " << deltaTotalMoment <<std::endl;
             std::cout << "Times : "<< t  <<std::endl;
             convergence=true;
         }
-        else if (it%outputFrequency==0)
+		totalMomentOld = totalMomentNew;
+		
+		if (it%outputFrequency==0)
         {
-            std::cout << "Time : " << t  << " - Convergence : "<< (deltaUmax/dt) <<std::endl;
+            std::cout << "Time : " << t  << " - Convergence : "<< (deltaTotalMoment) <<std::endl;
             writeLattice(domain,"Lattice",it,lat);
 
 			writeVelocityProfile("NumericalProfile.plt", lat, domain);
-        }
-
-        // This copies the content of lattice n to lattice n-1
-        // f0 = f
-        // u0 = u
-        for (int j=0 ; j< ntot; j++)
-        {
-            for (int n=0 ; n<9 ; n++)
-            {
-                lat.f0_[j][n] = lat.f_[j][n];
-            }
-            
-            u_old[j][0] = lat.u_[j][0];
-            u_old[j][1] = lat.u_[j][1];
         }
         
         t+=dt;
@@ -407,3 +295,4 @@ int main()
 	std::cin >> erreurL2;
     return 0;
 }
+
