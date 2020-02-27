@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <MAIN>
   <mesh>
-    <dx>0.05</dx>
+    <dx>0.1</dx>
   </mesh>
   <time>
     <timeEnd>100</timeEnd>

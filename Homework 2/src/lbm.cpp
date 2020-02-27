@@ -248,6 +248,8 @@ int main() {
 
 		calMacroValue(domain, xi, lat, g, dt);
 
+
+
         // Convergence test for velocity
         totalMomentNew = 0.;
 		for (int j = 0; j < ntot; j++)
@@ -291,7 +293,6 @@ int main() {
     }
     double erreurL2 = sqrt(1./domain.getNTot()*erreur);
     std::cout << "Norm of the error :  "<< erreurL2 <<std::endl;
-
 
 	writeVelocityProfile("NumericalProfile.plt",lat, domain);
 	std::cin >> erreurL2;

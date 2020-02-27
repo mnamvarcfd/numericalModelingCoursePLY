@@ -10,9 +10,7 @@ void collision(Domain domain, Lattice lat, double tau, double dt, double *omega,
 	double cx;
 	double cy;
 	double ro, ux, uy, udotu;
-
 	int iNode;
-	int iPullNode;
 
 	for (int j = 0; j < ny; j++) {
 		for (int i = 0; i < nx; i++) {
