@@ -238,13 +238,20 @@ int main() {
 	while (t < timeEnd && convergence == false)
 	{
 
+
+		for (int j = 0; j < ny; j++)
+			for (int i = 0; i < nx; i++)
+				for (int k = 0; k < 9; k++)
+					lat.f_[j][k] = lat.f0_[j][k];
+
+
 		collision(domain, lat, tau, dt, omega, xi, c1, c2, c3, c4, c5, g);
 
-		streaming(Cxy, domain, lat);
+		bouncBackBC(domain, lat);
 
+		streaming(Cxy, domain, lat);
 		periodicBC(domain, lat);
 
-		bouncBackBC(domain, lat);
 
 		calMacroValue(domain, xi, lat, g, dt);
 
