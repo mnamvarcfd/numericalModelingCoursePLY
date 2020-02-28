@@ -1,7 +1,7 @@
 #include "lattice.h"
 #include "domain.h"
 
-void streaming(double **Cxy, Domain domain, Lattice lat) {
+void streaming(Domain domain, Lattice lat) {
 
 
 	int nx = domain.getNx();

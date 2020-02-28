@@ -27,7 +27,7 @@
 void calMacroValue(Domain &domain, double **xi, Lattice lat, double *g, double dt);
 void bouncBackBC(Domain domain, Lattice lat);
 void periodicBC(Domain domain, Lattice lat);
-void streaming(double **Cxy, Domain domain, Lattice lat);
+void streaming(Domain domain, Lattice lat);
 void writeVelocityProfile(std::string fileName, Lattice lat, Domain domain);
 void writeResults(Domain domain, Lattice lat);
 void collision(Domain domain, Lattice lat, double tau, double dt, double *omega, double **xi,
@@ -225,18 +225,12 @@ int main() {
 	double totalMomentNew =  0.0;
 	double totalMomentOld =  0.0;
 
-	// Microscopic unit speed
-	double **Cxy;
-	Cxy = new double*[2];
-	Cxy[0] = new double[9];
-	Cxy[1] = new double[9];
-	setXi(Cxy, 1.0); 
-
-
-
 	// Time loop
 	while (t < timeEnd && convergence == false)
 	{
+
+
+		collision(domain, lat, tau, dt, omega, xi, c1, c2, c3, c4, c5, g);
 
 
 		for (int j = 0; j < ny; j++)
@@ -244,12 +238,11 @@ int main() {
 				for (int k = 0; k < 9; k++)
 					lat.f_[j][k] = lat.f0_[j][k];
 
-
-		collision(domain, lat, tau, dt, omega, xi, c1, c2, c3, c4, c5, g);
-
 		bouncBackBC(domain, lat);
 
-		streaming(Cxy, domain, lat);
+
+		streaming(domain, lat);
+
 		periodicBC(domain, lat);
 
 
