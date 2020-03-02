@@ -13,71 +13,62 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Source Files\origCode">
-      <UniqueIdentifier>{e76961f4-cb5f-4236-8d3b-4aeb898eecc7}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\calMacroValue.cpp">
+    <ClCompile Include="src\BoundaryCondition.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\lbm.cpp">
+    <ClCompile Include="src\poissulleVerificationFW.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\writeVelocityProfile.cpp">
+    <ClCompile Include="src\poissulleVerificationHW.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\domain.cpp">
-      <Filter>Source Files\origCode</Filter>
+    <ClCompile Include="src\LBMalgorithm.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\lattice.cpp">
-      <Filter>Source Files\origCode</Filter>
+    <ClCompile Include="src\Grid.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\parser.cpp">
-      <Filter>Source Files\origCode</Filter>
+    <ClCompile Include="src\postProccessing.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\LatticStencil.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\pch.cpp">
-      <Filter>Source Files\origCode</Filter>
-    </ClCompile>
-    <ClCompile Include="src\solutionExporterEulerian.cpp">
-      <Filter>Source Files\origCode</Filter>
-    </ClCompile>
-    <ClCompile Include="src\tinyxml2.cpp">
-      <Filter>Source Files\origCode</Filter>
-    </ClCompile>
-    <ClCompile Include="src\streaming.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\periodicBC.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\writeResults.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\bouncBackBC.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\collision.cpp">
+    <ClCompile Include="src\Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\tinyxml2.h">
+    <ClInclude Include="src\BoundaryCondition.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\poissulleVerificationFW.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\poissulleVerificationHW.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\LBMalgorithm.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Grid.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\postProccessing.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\LatticStencil.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\pch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\lattice.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\domain.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\parser.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\solutionExporterEulerian.h">
+    <ClInclude Include="src\Main.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -12,15 +12,15 @@ void writeResults(Domain domain, Lattice lat) {
 	fprintf(file1, "f7            f8  \n");
 
 	int iNode = 0;
-	for (int j = 0; j < domain.getNy(); j++) {
-		for (int i = 0; i < domain.getNx(); i++) {
-			iNode = j * domain.getNx() + i;
+	for (int j = 0; j < domain.ny; j++) {
+		for (int i = 0; i < domain.nx; i++) {
+			iNode = j * domain.nx + i;
 
 			fprintf(file1, "%d  %d ", i, j);
 
 
 			for (int k = 0; k < 9; k++) {
-				fprintf(file1, "%.9f  ", lat.f_[iNode][k]);
+				fprintf(file1, "%.9f  ", lat.f0_[iNode][k]);
 			}
 			fprintf(file1, "\n");
 
@@ -33,9 +33,9 @@ void writeResults(Domain domain, Lattice lat) {
 	fprintf(file1, " i  j          ro           u             v \n ");
 
 	iNode = 0;
-	for (int j = 0; j < domain.getNy(); j++) {
-		for (int i = 0; i < domain.getNx(); i++) {
-			iNode = j * domain.getNx() + i;
+	for (int j = 0; j < domain.ny; j++) {
+		for (int i = 0; i < domain.nx; i++) {
+			iNode = j * domain.nx + i;
 
 			fprintf(file1, "%d  %d ", i, j);
 

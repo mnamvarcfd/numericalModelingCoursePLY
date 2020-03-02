@@ -3,23 +3,23 @@
 
 void periodicBC(Domain domain, Lattice lat) {
 	
-	int nx = domain.getNx();
-	int ny = domain.getNy();
+	int nx = domain.nx;
+	int ny = domain.ny;
 
-	int iNodeTop;
-	int iNodeBot;
-	for (int j = 0; j < nx; j++) {
+	int iNodeLeft;
+	int iNodeRigt;
+	for (int j = 1; j < ny-1; j++) {
+		iNodeLeft = j * nx;
+		iNodeRigt = (j + 1) * nx - 1;
 
-		iNodeTop = (ny - 1) * nx + j;
-		iNodeBot = j;
+		lat.f0_[iNodeRigt][8] = lat.f0_[iNodeLeft][8];
+		lat.f0_[iNodeRigt][7] = lat.f0_[iNodeLeft][7];
+		lat.f0_[iNodeRigt][6] = lat.f0_[iNodeLeft][6];
 
-		lat.f0_[iNodeBot][2] = lat.f0_[iNodeTop][2];
-		lat.f0_[iNodeBot][6] = lat.f0_[iNodeTop][6];
-		lat.f0_[iNodeBot][5] = lat.f0_[iNodeTop][5];
-
-		lat.f0_[iNodeTop][4] = lat.f0_[iNodeBot][4];
-		lat.f0_[iNodeTop][7] = lat.f0_[iNodeBot][7];
-		lat.f0_[iNodeTop][8] = lat.f0_[iNodeBot][8];            
+		lat.f0_[iNodeLeft][2] = lat.f0_[iNodeRigt][2];
+		lat.f0_[iNodeLeft][3] = lat.f0_[iNodeRigt][3];
+		lat.f0_[iNodeLeft][4] = lat.f0_[iNodeRigt][4];
 	}
+
 
 }

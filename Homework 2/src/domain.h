@@ -16,7 +16,9 @@ class  Domain
  public:
     Domain();          // Public constructor
     ~Domain(); 	       // Public destructor
-
+	int nx;
+	int ny;
+	int ntot;
     // Accessors
     int getNx()   {return nx_;};
     int getNy()   {return ny_;};

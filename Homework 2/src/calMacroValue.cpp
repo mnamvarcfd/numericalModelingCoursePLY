@@ -1,7 +1,8 @@
 #include "domain.h"
+#include "LatticStencil.h"
 #include "lattice.h"
 
-void calMacroValue(Domain &domain, double **xi, Lattice lat, double *g, double dt){
+void calMacroValue(Domain &domain, LatticStencil stencil, Lattice lat){
 	
 	double fi;
 	double sumFi;
@@ -19,8 +20,8 @@ void calMacroValue(Domain &domain, double **xi, Lattice lat, double *g, double d
 		moment1y = 0.0;
 
 		for (int k = 0; k < 9; k++) {
-			cx = xi[0][k];
-			cy = xi[1][k];
+			cx = stencil.cx[k];
+			cy = stencil.cy[k];
 
 			fi = lat.f0_[j][k];
 
@@ -31,8 +32,8 @@ void calMacroValue(Domain &domain, double **xi, Lattice lat, double *g, double d
 
 		lat.rho_[j] = sumFi;
 
-		lat.u_[j][0] = (moment1x + 0.5*g[0] * dt) / sumFi; //x
-		lat.u_[j][1] = (moment1y + 0.5*g[1] * dt) / sumFi; //y
+		lat.u_[j][0] = moment1x / sumFi;
+		lat.u_[j][1] = moment1y / sumFi;
 	}
 
 }

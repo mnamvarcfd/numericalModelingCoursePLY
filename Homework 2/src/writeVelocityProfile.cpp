@@ -3,15 +3,15 @@
 #include "domain.h"
 void writeVelocityProfile(std::string fileName, Lattice lat, Domain domain) {
 
-	int nx = domain.getNx();
-	int ny = domain.getNy();
-	int ntot = domain.getNTot();
+	int nx = domain.nx;
+	int ny = domain.ny;
+	int ntot = domain.ntot;
 
 	FILE *file1;
 	fopen_s(&file1, fileName.c_str(), "w");
 
 	double *ux_Numeric = new double[nx];
-	double width = (nx - 1) / 2.;
+	double width = nx;
 
 	int cnt = 0;
 	for (int i = 0; i < ntot; i++) {
@@ -28,10 +28,10 @@ void writeVelocityProfile(std::string fileName, Lattice lat, Domain domain) {
 
 	fprintf(file1, "zone  \n ");
 	for (int i = 0; i < cnt; i++) {
-		double y = ((double)i - width);
+		double y = ((double)i - width / 2. + 0.5);
 		ux_Numeric[i] = ux_Numeric[i] /*/ uCenter*/;
 
-		fprintf(file1, "%.9f  %.9f  \n ", ux_Numeric[i], (y * 0.5) / width);
+		fprintf(file1, "%.9f  %.9f  \n ", ux_Numeric[i], (y ) / width);
 	}
 	fclose(file1);
 

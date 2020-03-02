@@ -136,7 +136,7 @@ void writeLattice(Domain& domain, string label, int iter, Lattice lat)
         file << "Test" << endl;
         file << "ASCII" << endl;
         file << "DATASET STRUCTURED_POINTS" << endl;
-        file << "DIMENSIONS" << " " << domain.getNx()+1 << " " << domain.getNy()+1 <<
+        file << "DIMENSIONS" << " " << domain.nx+1 << " " << domain.ny+1 <<
                 " " << 1 << endl;
         file << "ORIGIN" << " " << domain.getXMin() << " " << domain.getYMin() <<
                 " " << 0. << endl;

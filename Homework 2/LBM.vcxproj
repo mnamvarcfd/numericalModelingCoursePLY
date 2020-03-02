@@ -19,28 +19,26 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\bouncBackBC.cpp" />
-    <ClCompile Include="src\calMacroValue.cpp" />
-    <ClCompile Include="src\collision.cpp" />
-    <ClCompile Include="src\domain.cpp" />
-    <ClCompile Include="src\lattice.cpp" />
-    <ClCompile Include="src\lbm.cpp" />
-    <ClCompile Include="src\parser.cpp" />
+    <ClCompile Include="src\BoundaryCondition.cpp" />
+    <ClCompile Include="src\Grid.cpp" />
+    <ClCompile Include="src\LatticStencil.cpp" />
+    <ClCompile Include="src\Main.cpp" />
+    <ClCompile Include="src\LBMalgorithm.cpp" />
     <ClCompile Include="src\pch.cpp" />
-    <ClCompile Include="src\periodicBC.cpp" />
-    <ClCompile Include="src\solutionExporterEulerian.cpp" />
-    <ClCompile Include="src\streaming.cpp" />
-    <ClCompile Include="src\tinyxml2.cpp" />
-    <ClCompile Include="src\writeResults.cpp" />
-    <ClCompile Include="src\writeVelocityProfile.cpp" />
+    <ClCompile Include="src\poissulleVerificationHW.cpp" />
+    <ClCompile Include="src\poissulleVerificationFW.cpp" />
+    <ClCompile Include="src\postProccessing.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\domain.h" />
-    <ClInclude Include="src\lattice.h" />
-    <ClInclude Include="src\parser.h" />
+    <ClInclude Include="src\BoundaryCondition.h" />
+    <ClInclude Include="src\Grid.h" />
+    <ClInclude Include="src\LatticStencil.h" />
+    <ClInclude Include="src\Main.h" />
+    <ClInclude Include="src\LBMalgorithm.h" />
     <ClInclude Include="src\pch.h" />
-    <ClInclude Include="src\solutionExporterEulerian.h" />
-    <ClInclude Include="src\tinyxml2.h" />
+    <ClInclude Include="src\poissulleVerificationHW.h" />
+    <ClInclude Include="src\poissulleVerificationFW.h" />
+    <ClInclude Include="src\postProccessing.h" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="resources\parameter.xml" />

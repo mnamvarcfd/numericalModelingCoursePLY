@@ -3,10 +3,8 @@
 
 void streaming(Domain domain, Lattice lat) {
 
-
-	int nx = domain.getNx();
-	int ny = domain.getNy();
-
+	int nx = domain.nx;
+	int ny = domain.ny;
 
 	int iNode;
 	int iPullNode;
@@ -16,13 +14,13 @@ void streaming(Domain domain, Lattice lat) {
 
 			iNode = j * nx + i;
 			iPullNode = j * nx + i - 1;
-			lat.f0_[iNode][1] = lat.f0_[iPullNode][1];
+			lat.f0_[iNode][3] = lat.f0_[iPullNode][3];
 		}
 
 		for (int i = 0; i < nx - 1; i++) {
 			iNode = j * nx + i;
 			iPullNode = j * nx + i + 1;
-			lat.f0_[iNode][3] = lat.f0_[iPullNode][3];
+			lat.f0_[iNode][7] = lat.f0_[iPullNode][7];
 		}
 	}
 
@@ -30,13 +28,13 @@ void streaming(Domain domain, Lattice lat) {
 		for (int j = 0; j < ny - 1; j++) {
 			iNode = j * nx + i;
 			iPullNode = (j + 1) * nx + i;
-			lat.f0_[iNode][4] = lat.f0_[iPullNode][4];
+			lat.f0_[iNode][5] = lat.f0_[iPullNode][5];
 		}
 
 		for (int j = ny - 1; j > 0; j--) {
 			iNode = j * nx + i;
 			iPullNode = (j - 1) * nx + i;
-			lat.f0_[iNode][2] = lat.f0_[iPullNode][2];
+			lat.f0_[iNode][1] = lat.f0_[iPullNode][1];
 		}
 	}
 
@@ -44,14 +42,14 @@ void streaming(Domain domain, Lattice lat) {
 		for (int i = 0; i < nx - 1; i++) {
 			iNode = j * nx + i;
 			iPullNode = (j - 1) * nx + i + 1;
-			lat.f0_[iNode][6] = lat.f0_[iPullNode][6];
+			lat.f0_[iNode][8] = lat.f0_[iPullNode][8];
 		}
 
 		for (int i = nx - 1; i > 0; i--) {
 
 			iNode = j * nx + i;
 			iPullNode = (j - 1) * nx + i - 1;
-			lat.f0_[iNode][5] = lat.f0_[iPullNode][5];
+			lat.f0_[iNode][2] = lat.f0_[iPullNode][2];
 		}
 	}
 
@@ -59,13 +57,13 @@ void streaming(Domain domain, Lattice lat) {
 		for (int i = 0; i < nx - 1; i++) {
 			iNode = j * nx + i;
 			iPullNode = (j + 1) * nx + i + 1;
-			lat.f0_[iNode][7] = lat.f0_[iPullNode][7];
+			lat.f0_[iNode][6] = lat.f0_[iPullNode][6];
 		}
 
 		for (int i = nx - 1; i > 0; i--) {
 			iNode = j * nx + i;
 			iPullNode = (j + 1) * nx + i - 1;
-			lat.f0_[iNode][8] = lat.f0_[iPullNode][8];
+			lat.f0_[iNode][4] = lat.f0_[iPullNode][4];
 		}
 	}
 }
