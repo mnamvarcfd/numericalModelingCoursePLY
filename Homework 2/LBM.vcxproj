@@ -19,25 +19,23 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\PhD Thesis\LBM_Code\AF_LBM_MN\newVersionCode\src\poissulleVerification.cpp" />
     <ClCompile Include="src\BoundaryCondition.cpp" />
     <ClCompile Include="src\Grid.cpp" />
     <ClCompile Include="src\LatticStencil.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\LBMalgorithm.cpp" />
     <ClCompile Include="src\pch.cpp" />
-    <ClCompile Include="src\poissulleVerificationHW.cpp" />
-    <ClCompile Include="src\poissulleVerificationFW.cpp" />
     <ClCompile Include="src\postProccessing.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\PhD Thesis\LBM_Code\AF_LBM_MN\newVersionCode\src\poissulleVerification.h" />
     <ClInclude Include="src\BoundaryCondition.h" />
     <ClInclude Include="src\Grid.h" />
     <ClInclude Include="src\LatticStencil.h" />
     <ClInclude Include="src\Main.h" />
     <ClInclude Include="src\LBMalgorithm.h" />
     <ClInclude Include="src\pch.h" />
-    <ClInclude Include="src\poissulleVerificationHW.h" />
-    <ClInclude Include="src\poissulleVerificationFW.h" />
     <ClInclude Include="src\postProccessing.h" />
   </ItemGroup>
   <ItemGroup>

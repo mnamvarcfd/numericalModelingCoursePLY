@@ -50,6 +50,40 @@ void postProccessing::writeVectorFiedldVTK(Grid &grid)
 }
 
 
+void postProccessing::writeScalarFieldVTK(Grid &grid)
+{
+
+	// Establish the file name
+	string filename = "density.vtk";
+
+	// Declare the output flux and open the file
+	ofstream file(filename.c_str(), ios::out | ios::trunc);
+	cout << "Saving file: " << filename << endl;
+
+	if (file)  // File has been opened correctly
+	{
+		file << "# vtk DataFile Version 2.0" << endl;
+		file << "Test" << endl;
+		file << "ASCII" << endl;
+		file << "DATASET STRUCTURED_POINTS" << endl;
+		file << "DIMENSIONS" << " " << grid.getNx() + 1 << " " << grid.getNy() + 1 <<
+			" " << 1 << endl;
+		file << "ORIGIN" << " " << grid.getXMin() << " " << grid.getYMin() <<
+			" " << 0. << endl;
+		file << "SPACING" << " " << grid.getDx() << " " << grid.getDx() <<
+			" " << 1. << endl;
+		file << "CELL_DATA" << " " << grid.getNNode() << endl;
+		file << "SCALARS" << " " << "ScalarValue" << " " << "double" << " " << 1 << endl;
+		file << "LOOKUP_TABLE default" << endl;
+		for (int i = 0; i < grid.getNNode(); ++i)
+		{
+			file << grid.R[i] << endl;
+
+		}
+		file.close();  // close the file
+	}
+
+}
 
 void postProccessing::writeResults(Grid &grid) {
 

@@ -18,12 +18,6 @@
     <ClCompile Include="src\BoundaryCondition.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\poissulleVerificationFW.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\poissulleVerificationHW.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\LBMalgorithm.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -42,15 +36,12 @@
     <ClCompile Include="src\Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\PhD Thesis\LBM_Code\AF_LBM_MN\newVersionCode\src\poissulleVerification.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\BoundaryCondition.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\poissulleVerificationFW.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\poissulleVerificationHW.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\LBMalgorithm.h">
@@ -69,6 +60,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Main.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\PhD Thesis\LBM_Code\AF_LBM_MN\newVersionCode\src\poissulleVerification.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

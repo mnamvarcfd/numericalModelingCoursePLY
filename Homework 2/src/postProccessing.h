@@ -11,6 +11,8 @@ public:
 
 	void writeVectorFiedldVTK(Grid &grid);
 
+	void writeScalarFieldVTK(Grid & grid);
+
 	void writeResults(Grid & grid);
 
 	double calMom1Res(Grid & grid);

@@ -5,8 +5,7 @@
 
 // Local includes
 #include "Main.h"
-#include "poissulleVerificationHW.h";
-#include "poissulleVerificationFW.h";
+#include "poissulleVerification.h"
 #include "LatticStencil.h"
 #include "BoundaryCondition.h"
 #include "LBMalgorithm.h"
@@ -17,7 +16,7 @@
 
 int main() {
 
-	int N = 16;
+	int N = 8;
 	int nx_ = N; 
 	int ny_ = N; 
 
@@ -37,15 +36,14 @@ int main() {
 	stencil.setStencil();
 
 
-	poissulleVerificationFW poissulle;
-	//poissulleVerificationFW poissulle;
-	poissulle.setVariables(grid.getNx(), grid.getNy());
+	poissulleVerification poissulle;
+	//poissulle.setVariablesFullWay(grid.getNx(), grid.getNy());
+	poissulle.setVariablesHalfWay(grid.getNx(), grid.getNy());
 	double rhoIn = poissulle.rhoIn;
 	double rhout = poissulle.rhout;
-	double tau = 2./(6* poissulle.nu+1);
+	double tau = 1.0   /*2./(6* poissulle.nu+1)*/;
 	double rho0 = poissulle.rho0;
 	double cs = poissulle.cs;
-	int outputFrequency = 100;
 
 	
 	LBMalgorithm LBM = LBMalgorithm(grid, tau, cs, stencil);
@@ -62,10 +60,11 @@ int main() {
 	double t = 0;
 	int it = 0;
 	double deltaTotalMoment = 0.0;
+	int outputFrequency = 100;
 
 
 
-	while (convergence == false && it<8000)
+	while (convergence == false && it<3000)
 	{
 
 		LBM.collision();
@@ -84,8 +83,11 @@ int main() {
 		BC.zouHeLeft(rhoIn);
 		BC.zouHeRigt(rhout);
 
-		BC.fullWayBouncBack();
-		//BC.halfWayBouncBack();
+		BC.fullWayBouncBackTop();
+		BC.fullWayBouncBackBot();
+
+
+
 
 		LBM.calMacroValue();
 
@@ -102,7 +104,8 @@ int main() {
 		if (it%outputFrequency == 0)
 		{
 			std::cout << "Time : " << it << " - Convergence : " << (deltaTotalMoment) << std::endl;
-			//writeLattice(domain, "Lattice", it, lat);
+			//postProc.writeResults(grid);
+			//std::cin >> it;
 		}
 
 
@@ -115,7 +118,7 @@ int main() {
 	poissulle.erreurL2(grid.U);
 	poissulle.writeNumericVelcity(grid.U);
 	poissulle.writeAnalyticVelcity();
-
+	postProc.writeScalarFieldVTK(grid);
 
 	std::cin >> it;
 	return 0;

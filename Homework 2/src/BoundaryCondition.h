@@ -21,9 +21,15 @@ public:
 	BoundaryCondition(Grid &grid);
 	~BoundaryCondition();
 
+	void halfWayBouncBackBot();
+
+	void halfWayBouncBackTop();
+
 	void halfWayBouncBack();
 
-	void fullWayBouncBack();
+	void fullWayBouncBackBot();
+
+	void fullWayBouncBackTop();
 
 	void periodic();
 
@@ -40,6 +46,10 @@ public:
 	void zouHeTopRightCorner(double rho);
 
 	void ZouHeVelTop(double Uwall);
+
+	void zouHeVelTopLeftCorner(double rho, double vel);
+
+	void zouHeVelTopRigtCorner(double rho, double ux);
 
 };
 

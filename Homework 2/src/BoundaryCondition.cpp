@@ -12,17 +12,11 @@ BoundaryCondition::~BoundaryCondition()
 {
 }
 
-void BoundaryCondition::halfWayBouncBack() {
+void BoundaryCondition::halfWayBouncBackBot() {
 
-	int iNodeTop;
 	int iNodeBot;
 	for (int j = 1; j < nx - 1; j++) {
-		iNodeTop = (ny - 1) * nx + j;
 		iNodeBot = j;
-
-		fVal[iNodeTop][6] = fVal[iNodeTop][2];
-		fVal[iNodeTop][5] = fVal[iNodeTop][1];
-		fVal[iNodeTop][4] = fVal[iNodeTop][8];
 
 		fVal[iNodeBot][2] = fVal[iNodeBot][6];
 		fVal[iNodeBot][1] = fVal[iNodeBot][5];
@@ -30,21 +24,40 @@ void BoundaryCondition::halfWayBouncBack() {
 	}
 }
 
-void BoundaryCondition::fullWayBouncBack() {
+void BoundaryCondition::halfWayBouncBackTop() {
 
 	int iNodeTop;
-	int iNodeBot;
-	for (int j = 1; j < nx-1; j++) {
+	for (int j = 1; j < nx - 1; j++) {
 		iNodeTop = (ny - 1) * nx + j;
-		iNodeBot = j;
 
 		fVal[iNodeTop][6] = fVal[iNodeTop][2];
 		fVal[iNodeTop][5] = fVal[iNodeTop][1];
 		fVal[iNodeTop][4] = fVal[iNodeTop][8];
+	}
+}
+
+void BoundaryCondition::fullWayBouncBackBot() {
+
+	int iNodeTop;
+	int iNodeBot;
+	for (int j = 1; j < nx-1; j++) {
+		iNodeBot = j;
 
 		fVal[iNodeBot][2] = fVal[iNodeBot][6];
 		fVal[iNodeBot][1] = fVal[iNodeBot][5];
 		fVal[iNodeBot][8] = fVal[iNodeBot][4];
+	}
+}
+
+void BoundaryCondition::fullWayBouncBackTop() {
+
+	int iNodeTop;
+	for (int j = 1; j < nx - 1; j++) {
+		iNodeTop = (ny - 1) * nx + j;
+
+		fVal[iNodeTop][6] = fVal[iNodeTop][2];
+		fVal[iNodeTop][5] = fVal[iNodeTop][1];
+		fVal[iNodeTop][4] = fVal[iNodeTop][8];
 	}
 }
 
@@ -236,3 +249,47 @@ void BoundaryCondition::ZouHeVelTop(double Uwall) {
 
 }
 
+
+
+void BoundaryCondition::zouHeVelTopLeftCorner(double rho, double ux) {
+
+	int iNode = (ny - 1) * nx;
+
+	f0 = fVal[iNode][0];
+	f1 = fVal[iNode][1];
+	f2 = fVal[iNode][2];
+	f3 = fVal[iNode][3];
+	f4 = fVal[iNode][4];
+	f5 = fVal[iNode][5];
+	f6 = fVal[iNode][6];
+	f7 = fVal[iNode][7];
+	f8 = fVal[iNode][8];
+
+	fVal[iNode][3] = f7;
+	fVal[iNode][5] = f1;
+	fVal[iNode][4] = f8+0.5*rho*ux;
+	fVal[iNode][6] = (f1 + f3 + f8) - 0.5*rho*(ux - 1);
+	fVal[iNode][2] = (f1 + f3 + f8) + 0.5*rho;
+}
+
+
+void BoundaryCondition::zouHeVelTopRigtCorner(double rho, double ux) {
+
+	int iNode = ny * nx - 1;
+
+	f0 = fVal[iNode][0];
+	f1 = fVal[iNode][1];
+	f2 = fVal[iNode][2];
+	f3 = fVal[iNode][3];
+	f4 = fVal[iNode][4];
+	f5 = fVal[iNode][5];
+	f6 = fVal[iNode][6];
+	f7 = fVal[iNode][7];
+	f8 = fVal[iNode][8];
+
+	fVal[iNode][7] = f3;
+	fVal[iNode][5] = f1;
+	fVal[iNode][6] = f2 - 0.5*rho*ux;
+	fVal[iNode][4] = 0.5*rho*(ux + 1) - (f1 + f2 + f3);
+	fVal[iNode][8] = 0.5*rho - (f1 + f2 + f3);
+}
