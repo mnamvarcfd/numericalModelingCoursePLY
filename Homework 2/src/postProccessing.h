@@ -17,8 +17,13 @@ public:
 
 	double calMom1Res(Grid & grid);
 
+	double calMassRes(Grid & grid);
+
 	double totalMomentNew;
 	double totalMomentOld;
+
+	double totalMassNew;
+	double totalMassOld;
 
 };
 

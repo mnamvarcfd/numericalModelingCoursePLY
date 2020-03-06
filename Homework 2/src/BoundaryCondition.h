@@ -56,5 +56,9 @@ public:
 
 	void ZouHeVelBot(double Uwall);
 
+	void zouHeVelBotLeftCorner(double rho, double ux);
+
+	void zouHeVelBotRigtCorner(double rho, double ux);
+
 };
 

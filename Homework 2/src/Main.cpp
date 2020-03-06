@@ -43,8 +43,8 @@ int main() {
 	//poissulle.setVariablesHalfWay(grid.getNx(), grid.getNy());
 	poissulle.setVariablesOnSite(grid.getNx(), grid.getNy());
 	
-	double rhoIn = /*1.0*/ poissulle.rhoIn;
-	double rhout = /*1.0*/ poissulle.rhout;
+	double rhoIn = 1.0 /*poissulle.rhoIn*/;
+	double rhout = 1.0/* poissulle.rhout*/;
 	double tau = 1.0   /*2./(6* poissulle.nu+1)*/;
 	double rho0 = poissulle.rho0;
 	double cs = poissulle.cs;
@@ -52,10 +52,7 @@ int main() {
 	
 	LBMalgorithm LBM = LBMalgorithm(grid, tau, cs, stencil);
 	LBM.init();
-
 	BoundaryCondition BC = BoundaryCondition(grid);
-
-
 	postProccessing postProc;
 
 
@@ -82,30 +79,32 @@ int main() {
 
 
 		LBM.streaming();
-		//BC.periodic();
+		BC.periodic();
 	
-		BC.zouHeLeft(rhoIn);
-		BC.zouHeRigt(rhout);
+		//BC.zouHeLeft(rhoIn);
+		//BC.zouHeRigt(rhout);
 
 		//BC.fullWayBouncBackTop();
-		BC.fullWayBouncBackBot();
+		//BC.fullWayBouncBackBot();
 		
 		//BC.halfWayBouncBackTop(gridold);
 		//BC.halfWayBouncBackBot(gridold);
 
 		BC.ZouHeVelTop(1.);
-		//BC.zouHeVelTopLeftCorner(rhoIn, 1.);
-		//BC.zouHeVelTopRigtCorner(rhout, 1.);
+		BC.zouHeVelTopLeftCorner(rhoIn, 1.);
+		BC.zouHeVelTopRigtCorner(rhout, 1.);
 
-		//BC.ZouHeVelBot(0.);
-
+		BC.ZouHeVelBot(0.);
+		BC.zouHeVelBotLeftCorner(rhoIn, 0.);
+		BC.zouHeVelBotRigtCorner(rhout, 0.);
+		
 
 
 
 		LBM.calMacroValue();
 
 
-		deltaTotalMoment = postProc.calMom1Res(grid);
+		deltaTotalMoment = postProc.calMassRes(grid);
 
 
 		if ((deltaTotalMoment) < velocityConvergence)
