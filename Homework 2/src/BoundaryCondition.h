@@ -21,15 +21,18 @@ public:
 	BoundaryCondition(Grid &grid);
 	~BoundaryCondition();
 
-	void halfWayBouncBackBot();
+	void halfWayBouncBackBot(Grid & gridold);
 
-	void halfWayBouncBackTop();
+	void halfWayBouncBackTop(Grid & gridold);
 
-	void halfWayBouncBack();
 
 	void fullWayBouncBackBot();
 
 	void fullWayBouncBackTop();
+
+	void fullWayBouncBackLeft();
+
+	void fullWayBouncBackRigt();
 
 	void periodic();
 
@@ -47,9 +50,11 @@ public:
 
 	void ZouHeVelTop(double Uwall);
 
-	void zouHeVelTopLeftCorner(double rho, double vel);
+	void zouHeVelTopLeftCorner(double rho, double ux);
 
 	void zouHeVelTopRigtCorner(double rho, double ux);
+
+	void ZouHeVelBot(double Uwall);
 
 };
 

@@ -5,7 +5,7 @@
 
 // Local includes
 #include "Main.h"
-#include "poissulleVerification.h"
+#include "F:\PhD Thesis\LBM_Code\AF_LBM_MN\newVersionCode\src\poissulleVerification.h"
 #include "LatticStencil.h"
 #include "BoundaryCondition.h"
 #include "LBMalgorithm.h"
@@ -32,15 +32,19 @@ int main() {
 
 	Grid grid = Grid(nx_, ny_, nNode_, dx_, xMin_, xMax_, yMin_, yMax_);
 
+	Grid gridold = Grid(nx_, ny_, nNode_, dx_, xMin_, xMax_, yMin_, yMax_);
+
 	LatticStencil stencil;
 	stencil.setStencil();
 
 
 	poissulleVerification poissulle;
 	//poissulle.setVariablesFullWay(grid.getNx(), grid.getNy());
-	poissulle.setVariablesHalfWay(grid.getNx(), grid.getNy());
-	double rhoIn = poissulle.rhoIn;
-	double rhout = poissulle.rhout;
+	//poissulle.setVariablesHalfWay(grid.getNx(), grid.getNy());
+	poissulle.setVariablesOnSite(grid.getNx(), grid.getNy());
+	
+	double rhoIn = /*1.0*/ poissulle.rhoIn;
+	double rhout = /*1.0*/ poissulle.rhout;
 	double tau = 1.0   /*2./(6* poissulle.nu+1)*/;
 	double rho0 = poissulle.rho0;
 	double cs = poissulle.cs;
@@ -64,15 +68,15 @@ int main() {
 
 
 
-	while (convergence == false && it<3000)
+	while (convergence == false && it<8000)
 	{
 
 		LBM.collision();
-		//for (int j = 0; j < ny; j++) {
-		//	for (int i = 0; i < nx; i++) {
-		//		int iNode = j * nx + i;
+		//for (int j = 0; j < ny_; j++) {
+		//	for (int i = 0; i < nx_; i++) {
+		//		int iNode = j * nx_ + i;
 		//		for (int k = 0; k < 9; k++)
-		//			lat.f_[iNode][k] = lat.f0_[iNode][k];
+		//			gridold.fVal[iNode][k] = grid.fVal[iNode][k];
 		//	}
 		//}
 
@@ -83,8 +87,17 @@ int main() {
 		BC.zouHeLeft(rhoIn);
 		BC.zouHeRigt(rhout);
 
-		BC.fullWayBouncBackTop();
+		//BC.fullWayBouncBackTop();
 		BC.fullWayBouncBackBot();
+		
+		//BC.halfWayBouncBackTop(gridold);
+		//BC.halfWayBouncBackBot(gridold);
+
+		BC.ZouHeVelTop(1.);
+		//BC.zouHeVelTopLeftCorner(rhoIn, 1.);
+		//BC.zouHeVelTopRigtCorner(rhout, 1.);
+
+		//BC.ZouHeVelBot(0.);
 
 
 
@@ -107,8 +120,6 @@ int main() {
 			//postProc.writeResults(grid);
 			//std::cin >> it;
 		}
-
-
 		it++;
 	}
 
