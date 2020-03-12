@@ -39,16 +39,16 @@ int main() {
 
 
 	poissulleVerification poissulle;
-	//poissulle.setVariablesFullWay(grid.getNx(), grid.getNy());
+	poissulle.setVariablesFullWay(grid.getNx(), grid.getNy());
 	//poissulle.setVariablesHalfWay(grid.getNx(), grid.getNy());
-	poissulle.setVariablesOnSite(grid.getNx(), grid.getNy());
+	//poissulle.setVariablesOnSite(grid.getNx(), grid.getNy()); 
 	
-	double rhoIn = 1.0 /*poissulle.rhoIn*/;
-	double rhout = 1.0/* poissulle.rhout*/;
-	double tau = 1.0   /*2./(6* poissulle.nu+1)*/;
+	double rhoIn =  poissulle.rhoIn;
+	double rhout =  poissulle.rhout;
+	double tau = 2./(6* poissulle.nu+1);
 	double rho0 = poissulle.rho0;
 	double cs = poissulle.cs;
-
+	std::cout << tau << "====================" << rho0 << std::endl;
 	
 	LBMalgorithm LBM = LBMalgorithm(grid, tau, cs, stencil);
 	LBM.init();
@@ -61,11 +61,11 @@ int main() {
 	double t = 0;
 	int it = 0;
 	double deltaTotalMoment = 0.0;
-	int outputFrequency = 100;
+	int outputFrequency = 1;
 
 
 
-	while (convergence == false && it<8000)
+	while (convergence == false && it<1000)
 	{
 
 		LBM.collision();
@@ -79,32 +79,33 @@ int main() {
 
 
 		LBM.streaming();
-		BC.periodic();
+		//BC.periodic();
 	
 		//BC.zouHeLeft(rhoIn);
 		//BC.zouHeRigt(rhout);
 
-		//BC.fullWayBouncBackTop();
-		//BC.fullWayBouncBackBot();
+		BC.fullWayBouncBackTop();
+		BC.fullWayBouncBackBot();
 		
 		//BC.halfWayBouncBackTop(gridold);
 		//BC.halfWayBouncBackBot(gridold);
 
-		BC.ZouHeVelTop(1.);
-		BC.zouHeVelTopLeftCorner(rhoIn, 1.);
-		BC.zouHeVelTopRigtCorner(rhout, 1.);
+		//BC.ZouHeVelTop(1.);
+		BC.zouHeVelTopLeftCorner(rhoIn, 1.1);
+		BC.zouHeVelTopRigtCorner(rhout, 1.1);
 
-		BC.ZouHeVelBot(0.);
-		BC.zouHeVelBotLeftCorner(rhoIn, 0.);
-		BC.zouHeVelBotRigtCorner(rhout, 0.);
+		//BC.ZouHeVelBot(-1.);
+		BC.zouHeVelBotLeftCorner(rhoIn, 1.1);
+		BC.zouHeVelBotRigtCorner(rhout, 1.1);
 		
-
+		BC.ZouHeVelLeft(1.1, 0.0);
+		BC.ZouHeVelRigt(1.1, 0.0);
 
 
 		LBM.calMacroValue();
 
 
-		deltaTotalMoment = postProc.calMassRes(grid);
+		deltaTotalMoment = postProc.calMom1Res(grid);
 
 
 		if ((deltaTotalMoment) < velocityConvergence)
@@ -116,8 +117,8 @@ int main() {
 		if (it%outputFrequency == 0)
 		{
 			std::cout << "Time : " << it << " - Convergence : " << (deltaTotalMoment) << std::endl;
-			//postProc.writeResults(grid);
-			//std::cin >> it;
+			postProc.writeResults(grid);
+			std::cin >> it;
 		}
 		it++;
 	}

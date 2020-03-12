@@ -60,5 +60,9 @@ public:
 
 	void zouHeVelBotRigtCorner(double rho, double ux);
 
+	void ZouHeVelLeft(double ux, double uy);
+
+	void ZouHeVelRigt(double ux, double uy);
+
 };
 

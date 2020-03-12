@@ -77,9 +77,11 @@ void LBMalgorithm::collision() {
 
 	double uiei, uiei2, feq, fi, cx, cy, w, ro, ux, uy, udotu;
 	int iNode;
-
+	//for (int j = 1; j < ny; j++) {
 	for (int j = 1; j < ny-1; j++) {
-		for (int i = 0; i < nx; i++) {
+	//for (int j = 0; j < ny; j++) {
+		//for (int i = 0; i < nx; i++) {
+		for (int i = 1; i < nx-1; i++) {
 
 			iNode = getIndex(i, j);
 
