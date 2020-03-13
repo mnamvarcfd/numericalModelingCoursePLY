@@ -144,7 +144,8 @@ double postProccessing::calMom1Res(Grid &grid) {
 	for (int j = 0; j < grid.getNNode(); j++)
 		totalMomentNew += grid.U[j];
 
-	double residual = abs(totalMomentNew - totalMomentOld) / abs(totalMomentNew);
+	double residual = abs(totalMomentNew - totalMomentOld) / abs(totalMomentNew*grid.getNNode());
+	//std::cout << totalMomentNew << "===calMassRes==" << residual << std::endl;
 	
 	totalMomentOld = totalMomentNew;
 
@@ -158,8 +159,8 @@ double postProccessing::calMassRes(Grid &grid) {
 	for (int j = 0; j < grid.getNNode(); j++)
 		totalMassNew += grid.R[j];
 
-	double residual = abs(totalMassNew - totalMassOld) / abs(totalMassNew);
-	//std::cout << totalMassNew << "=====" << residual << std::endl;
+	double residual = abs(totalMassNew - totalMassOld) / (totalMassNew*grid.getNNode());
+	std::cout << totalMassNew << "===calMassRes==" << residual << std::endl;
 	totalMassOld = totalMassNew;
 
 	return residual;

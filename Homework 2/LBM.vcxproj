@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\PhD Thesis\LBM_Code\AF_LBM_MN\newVersionCode\src\couetteVerification.cpp" />
     <ClCompile Include="..\..\..\PhD Thesis\LBM_Code\AF_LBM_MN\newVersionCode\src\poissulleVerification.cpp" />
     <ClCompile Include="src\BoundaryCondition.cpp" />
     <ClCompile Include="src\Grid.cpp" />
@@ -29,6 +30,7 @@
     <ClCompile Include="src\postProccessing.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\PhD Thesis\LBM_Code\AF_LBM_MN\newVersionCode\src\couetteVerification.h" />
     <ClInclude Include="..\..\..\PhD Thesis\LBM_Code\AF_LBM_MN\newVersionCode\src\poissulleVerification.h" />
     <ClInclude Include="src\BoundaryCondition.h" />
     <ClInclude Include="src\Grid.h" />

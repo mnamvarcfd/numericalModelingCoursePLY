@@ -5,6 +5,11 @@ class BoundaryCondition
 
 	double **fVal;
 
+	double *rhoTopLeftCorn;	
+	double *rhoBotLeftCorn;
+	double *rhoBotRigtCorn;
+	double *rhoTopRigtCorn;
+
 	int nx;
 	int ny;
 	double f0;
@@ -48,21 +53,17 @@ public:
 
 	void zouHeTopRightCorner(double rho);
 
-	void ZouHeVelTop(double Uwall);
-
-	void zouHeVelTopLeftCorner(double rho, double ux);
-
-	void zouHeVelTopRigtCorner(double rho, double ux);
-
-	void ZouHeVelBot(double Uwall);
-
-	void zouHeVelBotLeftCorner(double rho, double ux);
-
-	void zouHeVelBotRigtCorner(double rho, double ux);
-
+	void ZouHeVelTop(double ux, double uy);
+	void ZouHeVelBot(double ux, double uy);
 	void ZouHeVelLeft(double ux, double uy);
-
 	void ZouHeVelRigt(double ux, double uy);
+
+	void zouHeVelTopLeftCorner(double ux, double uy);
+	void zouHeVelTopRigtCorner(double ux, double uy);
+	void zouHeVelBotLeftCorner(double ux, double uy);
+	void zouHeVelBotRigtCorner(double ux, double uy);
+
+
 
 };
 

@@ -1,11 +1,26 @@
 #include "BoundaryCondition.h"
 #include <iostream> 
+int getIndex(int nx, int i, int j) {
+	return j * nx + i;
+}
 BoundaryCondition::BoundaryCondition(Grid &grid)
 {
 	nx = grid.getNx();
 	ny = grid.getNy();
 
 	fVal = grid.fVal;
+
+	int iNode = getIndex(nx, 1, 1);
+	rhoBotLeftCorn = &grid.R[iNode];
+
+	iNode = getIndex(nx, nx-2, 1);
+	rhoBotRigtCorn = &grid.R[iNode];
+
+	iNode = getIndex(nx, 1, ny-2);
+	rhoTopLeftCorn = &grid.R[iNode];
+
+	iNode = getIndex(nx, nx-2, ny-2);
+	rhoTopRigtCorn = &grid.R[iNode];
 }
 
 BoundaryCondition::~BoundaryCondition()
@@ -132,7 +147,6 @@ void BoundaryCondition::zouHeLeft(double rho) {
 
 	zouHeTopLeftCorner(rho);
 }
-
 void BoundaryCondition::zouHeRigt(double rho) {
 
 	int iNodeRigt;
@@ -182,7 +196,6 @@ void BoundaryCondition::zouHeBottomLeftCorner(double rho) {
 	fVal[iNode][4] = 0.5*(rho - (f0 + 2 * f5 + 2 * f6 + 2 * f7));
 	fVal[iNode][8] = fVal[iNode][4];
 }
-
 void BoundaryCondition::zouHeTopLeftCorner(double rho) {
 
 	int iNode = (ny - 1) * nx;
@@ -203,7 +216,6 @@ void BoundaryCondition::zouHeTopLeftCorner(double rho) {
 	fVal[iNode][5] = f1;
 	fVal[iNode][6] = fVal[iNode][2];
 }
- 
 void BoundaryCondition::zouHeBottomRightCorner(double rho) {
 
 	int iNode = nx - 1;
@@ -224,7 +236,6 @@ void BoundaryCondition::zouHeBottomRightCorner(double rho) {
 	fVal[iNode][7] = f3;
 	fVal[iNode][8] = f4;
 }
- 
 void BoundaryCondition::zouHeTopRightCorner(double rho) {
 
 	int iNode = ny * nx-1;
@@ -267,27 +278,27 @@ void BoundaryCondition::ZouHeVelLeft(double ux, double uy) {
 
 		double rho = (f0 + f1 + f5 + 2 * (f6 + f7 + f8)) / (1 - ux);
 
-		//std::cout << (f0 + f1 + f5 + 2 * (f6 + f7 + f8))  << "====" <<  (1 - ux) << std::endl;
-
-		fVal[iNode][3] = f7 - (2. / 3)*rho*ux;
+		fVal[iNode][3] = f7 + (2. / 3)*rho*ux;
 		fVal[iNode][2] = f6 + 0.5*(f5 - f1) + 0.5*rho * uy + (1. / 6)*rho*ux;
-		fVal[iNode][4] = rho * ux + (f6 + f7 + f8) - (fVal[iNode][2] + fVal[iNode][3]);
+		fVal[iNode][4] = f8 - 0.5*(f5 - f1) - 0.5*rho * uy + (1. / 6)*rho*ux;
 
-		//f0 = fVal[iNode][0];
-		//f1 = fVal[iNode][1];
-		//f2 = fVal[iNode][2];
-		//f3 = fVal[iNode][3];
-		//f4 = fVal[iNode][4];
-		//f5 = fVal[iNode][5];
-		//f6 = fVal[iNode][6];
-		//f7 = fVal[iNode][7];
-		//f8 = fVal[iNode][8];
+		f0 = fVal[iNode][0];
+		f1 = fVal[iNode][1];
+		f2 = fVal[iNode][2];
+		f3 = fVal[iNode][3];
+		f4 = fVal[iNode][4];
+		f5 = fVal[iNode][5];
+		f6 = fVal[iNode][6];
+		f7 = fVal[iNode][7];
+		f8 = fVal[iNode][8];
+		//std::cout << iNode << "==iNode==" << ux << std::endl;
 		//std::cout << (f0 + f1 + f2 + f3 + f4 + f5 + f6 + f7 + f8) << "==rho==" << rho << std::endl;
-		//std::cout << (f2 + f3 + f4 - f6 - f7 - f8) << "==rho*Uwall==" << rho* ux << std::endl;
-
-		//std::cin >> f0;
+		//std::cout << (f2 + f3 + f4 - f6 - f7 - f8) << "==rho*ux==" << rho* ux << std::endl;
+		//std::cout << (f1 + f2 - f4 - f5 - f6 + f8) << "==rho*uy==" << rho* uy << std::endl;
+		
 	}
-
+//	std::cout << fVal[8][3] << "==fVal[8][3]==" << fVal[8][2] << std::endl;
+//std::cin >> f0;
 }
 void BoundaryCondition::ZouHeVelRigt(double ux, double uy) {
 
@@ -310,7 +321,8 @@ void BoundaryCondition::ZouHeVelRigt(double ux, double uy) {
 		fVal[iNode][7] = f3 - (2. / 3)*rho*ux;
 		fVal[iNode][6] = f2 + 0.5*(f1 - f5) - 0.5*rho * uy - (1. / 6)*rho*ux;
 
-		fVal[iNode][8] = f2 + f3 + f4 - (f6 + f7) - rho * ux;
+		fVal[iNode][8] = f4 - 0.5*(f1 - f5) + (1. / 6)*rho * uy - (1. / 6)*rho*ux;
+
 
 		//f0 = fVal[iNode][0];
 		//f1 = fVal[iNode][1];
@@ -322,14 +334,14 @@ void BoundaryCondition::ZouHeVelRigt(double ux, double uy) {
 		//f7 = fVal[iNode][7];
 		//f8 = fVal[iNode][8];
 		//std::cout << (f0 + f1 + f2 + f3 + f4 + f5 + f6 + f7 + f8) << "==rho==" << rho << std::endl;
-		//std::cout << (f2 + f3 + f4 - f6 - f7 - f8) << "==rho*Uwall==" << rho* ux << std::endl;
-
-
+		//std::cout << (f2 + f3 + f4 - f6 - f7 - f8) << "==rho*ux==" << rho* ux << std::endl;
+		//std::cout << (f1 + f2 - f4 - f5 - f6 + f8) << "==rho*uy==" << rho* uy << std::endl;
+		//std::cin >> f0;
 	}
 
 }
-void BoundaryCondition::ZouHeVelTop(double ux) {
-	double uy = 0.0;
+void BoundaryCondition::ZouHeVelTop(double ux, double uy) {
+	
 	int iNode;
 	for (int j = 1; j < nx - 1; j++) {
 		iNode = (ny - 1) * nx + j;
@@ -360,13 +372,13 @@ void BoundaryCondition::ZouHeVelTop(double ux) {
 		f7 = fVal[iNode][7];
 		f8 = fVal[iNode][8];
 		std::cout << (f0 + f1 + f2 + f3 + f4 + f5 + f6 + f7 + f8) << "==rho==" << rho << std::endl;
-		std::cout << (f2 + f3 + f4 - f6 - f7 - f8) << "==rho*Uwall==" << rho* ux << std::endl;*/
-		//std::cout << (f1 + f2 + f8 - f4 - f5 - f6) << "=====" << Uwall << std::endl;
+		std::cout << (f2 + f3 + f4 - f6 - f7 - f8) << "==rho*ux==" << rho*ux << std::endl;
+		std::cout << (f1 + f2 + f8 - f4 - f5 - f6) << "==rho*uy==" << rho * uy << std::endl;*/
 	}
 
 }
-void BoundaryCondition::ZouHeVelBot(double ux) {
-	double uy = 0.0;
+void BoundaryCondition::ZouHeVelBot(double ux, double uy) {
+
 	int iNode;
 	for (int j = 1; j < nx - 1; j++) {
 		iNode = j;
@@ -383,9 +395,10 @@ void BoundaryCondition::ZouHeVelBot(double ux) {
 
 		double rho = ( f0 + f3 + f7 + 2 * (f4 + f5 + f6) ) / (1 - uy);
 
-		fVal[iNode][1] = f5 - (2./3)*rho*uy;
-		fVal[iNode][8] = 0.5*rho * (1-ux) - (1./3)*rho*uy - (0.5*f0 + f5 + f6 + f7 +f8);
+		fVal[iNode][1] = f5 + (2./3)*rho*uy;
+		fVal[iNode][8] = 0.5*rho * (1-ux) - (1./3)*rho*uy - (0.5*f0 + f5 + f6 + f7);
 		fVal[iNode][2] = rho * ux - f3 - f4 + (f6 + f7 + fVal[iNode][8]);
+
 
 		//f0 = fVal[iNode][0];
 		//f1 = fVal[iNode][1];
@@ -397,7 +410,8 @@ void BoundaryCondition::ZouHeVelBot(double ux) {
 		//f7 = fVal[iNode][7];
 		//f8 = fVal[iNode][8];
 		//std::cout << (f0 + f1 + f2 + f3 + f4 + f5 + f6 + f7 + f8) << "==rho==" << rho << std::endl;
-		//std::cout << (f2 + f3 + f4 - f6 - f7 - f8) << "==rho*Uwall==" << rho* ux << std::endl;
+		//std::cout << (f2 + f3 + f4 - f6 - f7 - f8) << "==rho*ux==" << rho * ux << std::endl;
+		//std::cout << (f1 + f2 + f8 - f4 - f5 - f6) << "==rho*uy==" << rho * uy << std::endl;
 
 
 	}
@@ -405,8 +419,11 @@ void BoundaryCondition::ZouHeVelBot(double ux) {
 }
 
 
-void BoundaryCondition::zouHeVelTopLeftCorner(double rho, double ux) {
-	double uy = 0.0;
+void BoundaryCondition::zouHeVelTopLeftCorner(double ux, double uy) {
+    
+	double rho = *rhoTopLeftCorn;
+
+
 	int iNode = (ny - 1) * nx;
 
 	f0 = fVal[iNode][0];
@@ -438,8 +455,10 @@ void BoundaryCondition::zouHeVelTopLeftCorner(double rho, double ux) {
 	//std::cout << (f2 + f3 + f4 - f6 - f7 - f8) << "==rho*ux==" << rho* ux << std::endl;
 	//std::cout << (f1 + f2 + f8 - f4 - f5 - f6) << "==rho* uy==" << Uwall << std::endl;
 }
-void BoundaryCondition::zouHeVelTopRigtCorner(double rho, double ux) {
-	double uy = 0.0;
+void BoundaryCondition::zouHeVelTopRigtCorner(double ux, double uy) {
+
+	double rho = *rhoTopRigtCorn;
+
 	int iNode = ny * nx - 1;
 
 	f0 = fVal[iNode][0];
@@ -474,10 +493,12 @@ void BoundaryCondition::zouHeVelTopRigtCorner(double rho, double ux) {
 
 	//std::cin >> f0;
 }
-void BoundaryCondition::zouHeVelBotLeftCorner(double rho, double ux) {
-	double uy = 0.0;
-	int iNode = (ny - 1) * nx;
+void BoundaryCondition::zouHeVelBotLeftCorner(double ux, double uy) {
 
+	double rho = *rhoBotLeftCorn;
+
+
+	int iNode = 0;
 
 	f0 = fVal[iNode][0];
 	f1 = fVal[iNode][1];
@@ -505,10 +526,14 @@ void BoundaryCondition::zouHeVelBotLeftCorner(double rho, double ux) {
 	//f6 = fVal[iNode][6];
 	//f7 = fVal[iNode][7];
 	//f8 = fVal[iNode][8];
+
 	//std::cout << (f0 + f1 + f2 + f3 + f4 + f5 + f6 + f7 + f8) << "==rho==" << rho << std::endl;
 	//std::cout << (f2 + f3 + f4 - f6 - f7 - f8) << "==rho*ux==" << rho * ux << std::endl;
-	//if ((f0 + f1 + f2 + f3 + f4 + f5 + f6 + f7 + f8) != rho) {
+	//std::cout << (f1 + f2 - f4 - f5 - f6 + f8) << "==rho*uy==" << rho* uy << std::endl;
+	//std::cin >> f0;
 
+
+	//if ((f0 + f1 + f2 + f3 + f4 + f5 + f6 + f7 + f8) != rho) {
 	//	std::cout << "f0    " << f0 << std::endl;
 	//	std::cout << "f0    " << f1 << std::endl;
 	//	std::cout << "f0    " << f2 << std::endl;
@@ -520,10 +545,12 @@ void BoundaryCondition::zouHeVelBotLeftCorner(double rho, double ux) {
 	//	std::cout << "f0    " << f8 << std::endl;
 	//}
 }
-void BoundaryCondition::zouHeVelBotRigtCorner(double rho, double ux) {
+void BoundaryCondition::zouHeVelBotRigtCorner(double ux, double uy) {
 
-	int iNode = ny * nx - 1;
-	double uy = 0.0;
+	double rho = *rhoBotRigtCorn;
+
+
+	int iNode = nx - 1;
 
 	f0 = fVal[iNode][0];
 	f1 = fVal[iNode][1];
@@ -535,11 +562,13 @@ void BoundaryCondition::zouHeVelBotRigtCorner(double rho, double ux) {
 	f7 = fVal[iNode][7];
 	f8 = fVal[iNode][8];
 
-	fVal[iNode][7] = f3;
-	fVal[iNode][1] = f5;
-	fVal[iNode][6] = 0.5*rho*(1 - uy) - (0.5*f0 + f3 + f4 + f5);
-	fVal[iNode][8] = f4 - 0.5*rho*(ux-uy);
-	fVal[iNode][2] = 0.5*rho*(1 + ux) - (0.5*f0 + f3 + f4 + f5);
+	fVal[iNode][7] = f3 - (2. / 3)*rho*ux;
+	fVal[iNode][1] = f5 + (2. / 3)*rho*uy;
+	fVal[iNode][2] = 0.5*rho + (1. / 2)*rho*ux - (1. / 3)*rho*uy - (0.5*f0 + f3 + f4 + f5);
+	fVal[iNode][6] = 0.5*rho - (1. / 2)*rho*uy + (1. / 3)*rho*ux - (0.5*f0 + f3 + f4 + f5);
+	fVal[iNode][8] = f4 + (1. / 6)*rho*(uy-ux);
+
+
 
 
 	//f0 = fVal[iNode][0];
@@ -551,8 +580,13 @@ void BoundaryCondition::zouHeVelBotRigtCorner(double rho, double ux) {
 	//f6 = fVal[iNode][6];
 	//f7 = fVal[iNode][7];
 	//f8 = fVal[iNode][8];
+
 	//std::cout << (f0 + f1 + f2 + f3 + f4 + f5 + f6 + f7 + f8) << "==rho==" << rho << std::endl;
 	//std::cout << (f2 + f3 + f4 - f6 - f7 - f8) << "==rho*ux==" << rho * ux << std::endl;
+	//std::cout << (f1 + f2 - f4 - f5 - f6 + f8) << "==rho*uy==" << rho * uy << std::endl;
+	//std::cin >> f0;
+
+
 }
 
 

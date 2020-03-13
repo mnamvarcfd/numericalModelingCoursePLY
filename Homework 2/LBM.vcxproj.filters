@@ -39,6 +39,9 @@
     <ClCompile Include="..\..\..\PhD Thesis\LBM_Code\AF_LBM_MN\newVersionCode\src\poissulleVerification.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\PhD Thesis\LBM_Code\AF_LBM_MN\newVersionCode\src\couetteVerification.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\BoundaryCondition.h">
@@ -63,6 +66,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\PhD Thesis\LBM_Code\AF_LBM_MN\newVersionCode\src\poissulleVerification.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\PhD Thesis\LBM_Code\AF_LBM_MN\newVersionCode\src\couetteVerification.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
